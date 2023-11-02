@@ -39,7 +39,7 @@ class _Ruler:
 
 
     @staticmethod
-    def calculate_doa_k(mas_level, q_matrix, r_matrix, k):
+    def __calculate_doa_k(mas_level, q_matrix, r_matrix, k):
         n_questions, _ = q_matrix.shape
         numerator = 0
         denominator = 0
@@ -55,8 +55,10 @@ class _Ruler:
             denominator_ = np.logical_and(mask, I_matrix)
             numerator += np.sum(delta_matrix * numerator_)
             denominator += np.sum(delta_matrix * denominator_)
-
-        DOA_k = numerator / denominator
+        if denominator == 0:
+            DOA_k = 0
+        else:
+            DOA_k = numerator / denominator
         return DOA_k
 
     @staticmethod
@@ -87,17 +89,18 @@ class _Ruler:
             DOA_k = numerator / denominator
         return DOA_k
 
-    def degree_of_agreement(self, mastery_level, datahub):
+    def degree_of_agreement(self, mastery_level, datahub, set_type):
         q_matrix = datahub.q_matrix
         know_n = q_matrix.shape[1]
-        r_matrix = datahub.r_matrix(datahub.valid_data)
+        r_matrix = datahub.r_matrix(set_type)
         if know_n > self.partial_doa:
             concepts = datahub.top_k_concepts(self.top_k_doa)
             doa_k_list = Parallel(n_jobs=-1)(
                 delayed(self.__calculate_doa_k_block)(mastery_level, q_matrix, r_matrix, k) for k in concepts)
         else:
             doa_k_list = Parallel(n_jobs=-1)(
-                delayed(self.calculate_doa_k)(mastery_level, q_matrix, r_matrix, k) for k in range(know_n))
+                delayed(self.__calculate_doa_k)(mastery_level, q_matrix, r_matrix, k) for k in range(know_n))
+        doa_k_list = [x for x in doa_k_list if x != 0]
         return np.mean(doa_k_list)
 
     @staticmethod
@@ -126,7 +129,7 @@ class _Ruler:
             if metric in ["acc", "auc", "f1", "rmse"]:
                 results[metric] = self.__method_map[metric](true_r, pred_r)
             elif metric in ["doa"]:
-                results[metric] = self.__method_map[metric](mastery_level, datahub)
+                results[metric] = self.__method_map[metric](mastery_level, datahub, set_type)
             elif metric in ["mad"]:
                 results[metric] = self.__method_map[metric](mastery_level)
             else:

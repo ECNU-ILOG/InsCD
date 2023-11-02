@@ -22,9 +22,9 @@ class NCD_IF(_InteractionFunction, nn.Module):
         self.device = device
         self.dtype = dtype
 
-        self.__student_emb = nn.Embedding(self.student_num, self.knowledge_num)
-        self.__diff_emb = nn.Embedding(self.exercise_num, self.knowledge_num)
-        self.__disc_emb = nn.Embedding(self.exercise_num, 1)
+        self.__student_emb = nn.Embedding(self.student_num, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.__diff_emb = nn.Embedding(self.exercise_num, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.__disc_emb = nn.Embedding(self.exercise_num, 1, dtype=self.dtype).to(self.device)
 
         self.__emb_map = {
             "mastery": self.__student_emb,
@@ -51,10 +51,11 @@ class NCD_IF(_InteractionFunction, nn.Module):
                 )
         layers.update(
             {
+                'dropout{}'.format(len(self.hidden_dims)): nn.Dropout(p=self.dropout),
                 'linear{}'.format(len(self.hidden_dims)): nn.Linear(
                     self.hidden_dims[len(self.hidden_dims) - 1], 1, dtype=self.dtype
                 ),
-                'linear{}'.format(len(self.hidden_dims)): nn.Sigmoid()
+                'activation{}'.format(len(self.hidden_dims)): nn.Sigmoid()
             }
         )
 
@@ -86,7 +87,7 @@ class NCD_IF(_InteractionFunction, nn.Module):
             student_id, exercise_id, knowledge, r = batch_data
             student_id: torch.Tensor = student_id.to(self.device)
             exercise_id: torch.Tensor = exercise_id.to(self.device)
-            knowledge = knowledge.to(self.device)
+            knowledge: torch.Tensor = knowledge.to(self.device)
             r: torch.Tensor = r.to(self.device)
             pred_r = self.forward(student_id, exercise_id, knowledge)
             loss = loss_func(pred_r, r)
@@ -115,12 +116,12 @@ class NCD_IF(_InteractionFunction, nn.Module):
             student_id: torch.Tensor = student_id.to(self.device)
             exercise_id: torch.Tensor = exercise_id.to(self.device)
             knowledge = knowledge.to(self.device)
-            pred_r = self.net.forward(student_id, exercise_id, knowledge)
-            pred.extend(pred_r.diagnose().cpu().tolist())
+            pred_r = self.forward(student_id, exercise_id, knowledge)
+            pred.extend(pred_r.detach().cpu().tolist())
         return pred
 
 
     def __getitem__(self, item):
         if item not in self.__emb_map.keys():
             raise ValueError("We can detach {} from embeddings.".format(self.__emb_map.keys()))
-        return torch.sigmoid(self.__emb_map[item].weight.diagnose().cpu()).numpy()
+        return torch.sigmoid(self.__emb_map[item].weight.detach().cpu()).numpy()

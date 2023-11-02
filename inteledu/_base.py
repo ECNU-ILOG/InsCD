@@ -23,27 +23,27 @@ class _CognitiveDiagnosisModel:
         self.student_num = student_num
         self.exercise_num = exercise_num
         self.knowledge_num = knowledge_num
-        # ellipse members
+        # ellipsis members
         self.method = ...
         self.device: str = ...
         self.inter_func: _InteractionFunction = ...
 
     def _train(self, datahub, set_type="train",
                 valid_set_type=None, valid_metrics=None, **kwargs):
-        if self.inter_func is ellipsis:
+        if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         self.inter_func.fit(datahub, set_type, **kwargs)
         if valid_set_type is not None:
-            self.score(datahub, valid_set_type, valid_metrics)
+            self.score(datahub, valid_set_type, valid_metrics, **kwargs)
 
     def _predict(self, datahub, set_type: str, **kwargs):
-        if self.inter_func is ellipsis:
+        if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         return self.inter_func.compute(datahub, set_type, **kwargs)
 
     @listener
     def _score(self, datahub, set_type: str, metrics: list, **kwargs):
-        if self.inter_func is ellipsis:
+        if self.inter_func is  Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         pred_r = self.inter_func.compute(datahub, set_type, **kwargs)
         return ruler(self, datahub, set_type, pred_r, metrics)
@@ -61,7 +61,7 @@ class _CognitiveDiagnosisModel:
         ...
 
     @abstractmethod
-    def score(self, datahub, set_type, metrics: list)->dict:
+    def score(self, datahub, set_type, metrics: list,  **kwargs)->dict:
         ...
 
     @abstractmethod

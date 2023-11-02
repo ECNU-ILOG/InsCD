@@ -182,8 +182,8 @@ class DataHub:
 
         r_matrix = -1 * np.ones(shape=(self.student_num, self.exercise_num))
         for line in tmp_set:
-            student_id = line[0]
-            exercise_id = line[1]
+            student_id = int(line[0])
+            exercise_id = int(line[1])
             score = line[2]
             r_matrix[student_id, exercise_id] = int(score)
         return r_matrix

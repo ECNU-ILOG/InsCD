@@ -42,25 +42,26 @@ class NCDM(_CognitiveDiagnosisModel):
         loss_func = nn.BCELoss()
         optimizer = optim.Adam(self.inter_func.parameters(),lr=lr, weight_decay=weight_decay)
         for epoch_i in range(0, epoch):
+            print("[Epoch {}]".format(epoch_i + 1))
             self._train(datahub=datahub, set_type=set_type,
                          valid_set_type=valid_set_type, valid_metrics=valid_metrics,
                          batch_size=256, loss_func=loss_func, optimizer=optimizer)
 
-    def predict(self, datahub: DataHub, set_type, batch_size=256):
+    def predict(self, datahub: DataHub, set_type, batch_size=256, **kwargs):
         return self._predict(datahub=datahub, set_type=set_type, batch_size=batch_size)
 
-    def score(self, datahub: DataHub, set_type, metrics: list) -> dict:
+    def score(self, datahub: DataHub, set_type, metrics: list, batch_size=256, **kwargs) -> dict:
         if metrics is None:
             metrics = ["acc", "auc", "f1", "doa"]
-        return self._score(datahub=datahub, set_type=set_type, metrics=metrics)
+        return self._score(datahub=datahub, set_type=set_type, metrics=metrics, batch_size=256)
 
     def diagnose(self):
-        if self.inter_func is ellipsis:
+        if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         return self.inter_func["mastery"]
 
     def load(self, path: str):
-        if self.inter_func is ellipsis:
+        if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         self.inter_func.load_state_dict(torch.load(path))
 
