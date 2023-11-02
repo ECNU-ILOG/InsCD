@@ -42,17 +42,17 @@ class NCDM(_CognitiveDiagnosisModel):
         loss_func = nn.BCELoss()
         optimizer = optim.Adam(self.inter_func.parameters(),lr=lr, weight_decay=weight_decay)
         for epoch_i in range(0, epoch):
-            self.__train(datahub=datahub, set_type=set_type,
+            self._train(datahub=datahub, set_type=set_type,
                          valid_set_type=valid_set_type, valid_metrics=valid_metrics,
                          batch_size=256, loss_func=loss_func, optimizer=optimizer)
 
     def predict(self, datahub: DataHub, set_type, batch_size=256):
-        return self.__predict(datahub=datahub, set_type=set_type, batch_size=batch_size)
+        return self._predict(datahub=datahub, set_type=set_type, batch_size=batch_size)
 
     def score(self, datahub: DataHub, set_type, metrics: list) -> dict:
         if metrics is None:
             metrics = ["acc", "auc", "f1", "doa"]
-        return self.__score(datahub=datahub, set_type=set_type, metrics=metrics)
+        return self._score(datahub=datahub, set_type=set_type, metrics=metrics)
 
     def diagnose(self):
         if self.inter_func is ellipsis:
