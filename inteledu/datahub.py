@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 
 class DataHub:
     def __init__(self, data_source: Union[str, np.ndarray], **kwargs):
-        # ellipse object for loading
+        # ellipsis object for loading
         self.config: dict = ...
         self.response: np.ndarray = ...
         self.q_matrix: np.ndarray = ...
@@ -59,7 +59,7 @@ class DataHub:
         if set_type not in self.__set_type_map.keys():
             raise ValueError("Dataset \"{}\" does not exist. If you create your new dataset via \"load_data()\", "
                              "the parameter \"dataset\" is one of the {}".format(set_type, self.__set_type_map.keys()))
-        return self.__set_type_map[set_type][:, -1].T.tolist()[0]
+        return self.__set_type_map[set_type][:, -1].T.tolist()
 
     def random_split(self, slice_out=0.8, source="total", to: list=None):
         if not 0 < slice_out < 1:
@@ -158,8 +158,8 @@ class DataHub:
         if label is True:
             if tmp_set.shape[1] == 3:
                 tensor_dataset = tud.TensorDataset(
-                    torch.tensor(tmp_set[:, 0], dtype=dtype),
-                    torch.tensor(tmp_set[:, 1], dtype=dtype),
+                    torch.tensor(tmp_set[:, 0], dtype=torch.int64),
+                    torch.tensor(tmp_set[:, 1], dtype=torch.int64),
                     torch.tensor(self.q_matrix[np.array(tmp_set[:, 1], dtype=int), :], dtype=dtype),
                     torch.tensor(tmp_set[:, 2], dtype=dtype)
                 )
@@ -168,7 +168,7 @@ class DataHub:
                                    "with labels.".format(set_type))
         else:
             tensor_dataset = tud.TensorDataset(
-                torch.tensor(tmp_set[:, 0], dtype=dtype),
+                torch.tensor(tmp_set[:, 0], dtype=torch.int64),
                 torch.tensor(tmp_set[:, 1], dtype=torch.int64),
                 torch.tensor(self.q_matrix[np.array(tmp_set[:, 1], dtype=int), :], dtype=dtype),
             )
