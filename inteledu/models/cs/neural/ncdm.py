@@ -7,7 +7,7 @@ from ....datahub import DataHub
 from ....interfunc import NCD_IF
 
 class NCDM(_CognitiveDiagnosisModel):
-    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, method=None):
+    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
         """
         Description:
         NCDM ...
@@ -22,7 +22,7 @@ class NCDM(_CognitiveDiagnosisModel):
         method: Ignored
             Not used, present here for API consistency by convention.
         """
-        super().__init__(student_num, exercise_num, knowledge_num, method)
+        super().__init__(student_num, exercise_num, knowledge_num)
     def build(self, hidden_dims: list=None, dropout=0.5, device="cpu", dtype=torch.float32, **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]

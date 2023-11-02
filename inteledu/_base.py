@@ -19,12 +19,12 @@ class _InteractionFunction:
 
 
 class _CognitiveDiagnosisModel:
-    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, method: str):
+    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
         self.student_num = student_num
         self.exercise_num = exercise_num
         self.knowledge_num = knowledge_num
-        self.method = method
         # ellipse members
+        self.method = ...
         self.device: str = ...
         self.inter_func: _InteractionFunction = ...
 
