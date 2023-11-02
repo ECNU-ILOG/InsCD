@@ -3,9 +3,6 @@ from sklearn.metrics import accuracy_score, roc_auc_score, mean_squared_error
 from sklearn.metrics import f1_score as f1
 from joblib import Parallel, delayed
 
-from .datahub import DataHub
-from ._base import _CognitiveDiagnosisModel
-
 class _Ruler:
     """
     Description:
@@ -121,7 +118,7 @@ class _Ruler:
             raise ValueError("Currently, we do not support metric {}. We support {}".format(item, self.__method_map.keys()))
         return self.__method_map[item]
 
-    def __call__(self, model: _CognitiveDiagnosisModel, datahub: DataHub, set_type: str, pred_r: list, metrics: list):
+    def __call__(self, model, datahub, set_type: str, pred_r: list, metrics: list):
         mastery_level = model.diagnose()
         true_r = datahub.detach_labels(set_type)
         results = {}

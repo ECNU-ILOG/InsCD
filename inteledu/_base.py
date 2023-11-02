@@ -2,16 +2,15 @@ from abc import abstractmethod
 
 from . import listener
 from . import ruler
-from .datahub import DataHub
 
 
 class _InteractionFunction:
     @abstractmethod
-    def fit(self, datahub: DataHub, set_type, **kwargs):
+    def fit(self, datahub, set_type, **kwargs):
         ...
 
     @abstractmethod
-    def compute(self, datahub: DataHub, set_type, **kwargs):
+    def compute(self, datahub, set_type, **kwargs):
         ...
 
     @abstractmethod
@@ -29,7 +28,7 @@ class _CognitiveDiagnosisModel:
         self.device: str = ...
         self.inter_func: _InteractionFunction = ...
 
-    def __train(self, datahub: DataHub, set_type="train",
+    def __train(self, datahub, set_type="train",
                 valid_set_type=None, valid_metrics=None, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
@@ -37,13 +36,13 @@ class _CognitiveDiagnosisModel:
         if valid_set_type is not None:
             self.score(datahub, valid_set_type, valid_metrics)
 
-    def __predict(self, datahub: DataHub, set_type: str, **kwargs):
+    def __predict(self, datahub, set_type: str, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         return self.inter_func.compute(datahub, set_type, **kwargs)
 
     @listener
-    def __score(self, datahub: DataHub, set_type: str, metrics: list, **kwargs):
+    def __score(self, datahub, set_type: str, metrics: list, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         pred_r = self.inter_func.compute(datahub, set_type, **kwargs)
@@ -54,15 +53,15 @@ class _CognitiveDiagnosisModel:
         ...
 
     @abstractmethod
-    def train(self, datahub: DataHub, set_type, valid_set_type=None, valid_metrics=None, **kwargs):
+    def train(self, datahub, set_type, valid_set_type=None, valid_metrics=None, **kwargs):
         ...
 
     @abstractmethod
-    def predict(self, datahub: DataHub, set_type, **kwargs):
+    def predict(self, datahub, set_type, **kwargs):
         ...
 
     @abstractmethod
-    def score(self, datahub: DataHub, set_type, metrics: list)->dict:
+    def score(self, datahub, set_type, metrics: list)->dict:
         ...
 
     @abstractmethod
