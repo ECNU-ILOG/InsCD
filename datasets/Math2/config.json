@@ -1,0 +1,14 @@
+{
+  "dataset": "Math2",
+  "files": {
+    "graph": "graph.csv",
+    "hierarchy": "hierarchy.csv",
+    "q_matrix": "q_matrix.csv",
+    "response": "response.csv"
+  },
+  "info": {
+    "student_num": 3911,
+    "exercise_num": 16,
+    "knowledge_num": 16
+  }
+}
