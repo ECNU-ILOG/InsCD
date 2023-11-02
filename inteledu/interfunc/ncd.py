@@ -5,7 +5,7 @@ import numpy as np
 from collections import OrderedDict
 from tqdm import tqdm
 
-from ..base import _InteractionFunction
+from .._base import _InteractionFunction
 from ..datahub import DataHub
 from ._util import none_neg_clipper
 

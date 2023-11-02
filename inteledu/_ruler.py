@@ -4,7 +4,7 @@ from sklearn.metrics import f1_score as f1
 from joblib import Parallel, delayed
 
 from .datahub import DataHub
-from .base import _CognitiveDiagnosisModel
+from ._base import _CognitiveDiagnosisModel
 
 class _Ruler:
     """

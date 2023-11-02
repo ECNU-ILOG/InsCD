@@ -3,7 +3,7 @@ import torch
 import scipy.stats as ss
 import numpy as np
 import torch.nn as nn
-from inteledu.base import _CognitiveDiagnosisModel, _InteractionFunction
+from inteledu._base import _CognitiveDiagnosisModel, _InteractionFunction
 from inteledu.datahub import DataHub
 
 

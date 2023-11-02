@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from ....base import _CognitiveDiagnosisModel
+from ...._base import _CognitiveDiagnosisModel
 from ....datahub import DataHub
 from ....interfunc import NCD_IF
 
