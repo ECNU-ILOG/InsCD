@@ -28,9 +28,6 @@ class DataHub:
                 exec("self.{} = {}".format(info_name, info_var))
         else:
             raise ValueError("Unexpected type of \"data_source\" {}".format(type(data_source)))
-        # ellipse object for default datasets
-        self.__train: np.ndarray = ...
-        self.__valid: np.ndarray = ...
 
         self.__set_type_map = {
             "total": self.response
@@ -64,8 +61,8 @@ class DataHub:
                              "the parameter \"dataset\" is one of the {}".format(set_type, self.__set_type_map.keys()))
         return self.__set_type_map[set_type][:, -1].T.tolist()[0]
 
-    def random_split(self, train_rate=0.8, source="total", to: list=None):
-        if not 0 < train_rate < 1:
+    def random_split(self, slice_out=0.8, source="total", to: list=None):
+        if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
         if to is None:
@@ -83,16 +80,14 @@ class DataHub:
 
         tmp_set = self.__set_type_map[source]
         set0, set1 = train_test_split(tmp_set, shuffle=True,
-                                      train_size=int(train_rate * self.response.shape[0]))
-        exec("self.__{} = set0".format(to[0]))
-        exec("self.__set_type_map[{}] = self.__{}".format(to[0], to[0]))
+                                      train_size=int(slice_out * self.__set_type_map[source].shape[0]))
 
-        exec("self.__{} = set1".format(to[1]))
-        exec("self.__set_type_map[{}] = self.__{}".format(to[1], to[1]))
+        self.__set_type_map[to[0]] = set0
+        self.__set_type_map[to[1]] = set1
 
 
-    def group_split(self, train_rate=0.8, source="total", to: list=None):
-        if not 0 < train_rate < 1:
+    def group_split(self, slice_out=0.8, source="total", to: list=None):
+        if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
         if to is None:
@@ -108,17 +103,15 @@ class DataHub:
             raise ValueError("Dataset \"{}\" does not exist. If you create your new dataset via \"load_data()\", "
                              "the parameter \"dataset\" is one of the {}".format(source, self.__set_type_map.keys()))
 
+
         tmp_set = self.__set_type_map[source]
         student_id = np.unique(tmp_set[:, 0].T)
 
         candidate = np.random.choice(student_id,
-                                     size=int(train_rate * self.student_num), replace=False)
+                                     size=int(slice_out * len(student_id)), replace=False)
 
-        exec("self.__{} = tmp_set[np.isin(tmp_set[:, 0], candidate)]".format(to[0]))
-        exec("self.__set_type_map[{}] = self.__{}".format(to[0], to[0]))
-
-        exec("self.__{} = tmp_set[~np.isin(tmp_set[:, 0], candidate)]".format(to[1]))
-        exec("self.__set_type_map[{}] = self.__{}".format(to[1], to[1]))
+        self.__set_type_map[to[0]] = tmp_set[np.isin(tmp_set[:, 0], candidate)]
+        self.__set_type_map[to[1]] = tmp_set[~np.isin(tmp_set[:, 0], candidate)]
 
     def mean_correct_rate(self, set_type="total"):
         if set_type not in self.__set_type_map.keys():
