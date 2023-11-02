@@ -28,7 +28,7 @@ class _CognitiveDiagnosisModel:
         self.device: str = ...
         self.inter_func: _InteractionFunction = ...
 
-    def __train(self, datahub, set_type="train",
+    def _train(self, datahub, set_type="train",
                 valid_set_type=None, valid_metrics=None, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
@@ -36,13 +36,13 @@ class _CognitiveDiagnosisModel:
         if valid_set_type is not None:
             self.score(datahub, valid_set_type, valid_metrics)
 
-    def __predict(self, datahub, set_type: str, **kwargs):
+    def _predict(self, datahub, set_type: str, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         return self.inter_func.compute(datahub, set_type, **kwargs)
 
     @listener
-    def __score(self, datahub, set_type: str, metrics: list, **kwargs):
+    def _score(self, datahub, set_type: str, metrics: list, **kwargs):
         if self.inter_func is ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         pred_r = self.inter_func.compute(datahub, set_type, **kwargs)
