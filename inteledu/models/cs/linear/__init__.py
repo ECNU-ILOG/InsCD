@@ -1,1 +1,0 @@
-from .irt import ItemResponseTheory

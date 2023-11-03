@@ -6,8 +6,8 @@ from collections import OrderedDict
 from tqdm import tqdm
 
 from .._base import _InteractionFunction
-from ..datahub import DataHub
 from ._util import none_neg_clipper
+from ..datahub import DataHub
 
 
 class NCD_IF(_InteractionFunction, nn.Module):

@@ -3,7 +3,7 @@ import wandb
 from pprint import pprint
 from inteledu import listener
 from inteledu.datahub import DataHub
-from inteledu.models.cs.neural import NCDM
+from inteledu.models.cross.neural import NCDM
 
 wandb.init(
     project="test inteledu"
