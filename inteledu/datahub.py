@@ -61,7 +61,7 @@ class DataHub:
                              "the parameter \"dataset\" is one of the {}".format(set_type, self.__set_type_map.keys()))
         return self.__set_type_map[set_type][:, -1].T.tolist()
 
-    def random_split(self, slice_out=0.8, source="total", to: list=None):
+    def random_split(self, slice_out=0.8, source="total", to: list=None, seed=6594):
         if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
@@ -80,13 +80,14 @@ class DataHub:
 
         tmp_set = self.__set_type_map[source]
         set0, set1 = train_test_split(tmp_set, shuffle=True,
-                                      train_size=int(slice_out * self.__set_type_map[source].shape[0]))
+                                      train_size=int(slice_out * self.__set_type_map[source].shape[0]),
+                                      random_state=seed)
 
         self.__set_type_map[to[0]] = set0
         self.__set_type_map[to[1]] = set1
 
 
-    def group_split(self, slice_out=0.8, source="total", to: list=None):
+    def group_split(self, slice_out=0.8, source="total", to: list=None, seed=6594):
         if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
@@ -107,8 +108,9 @@ class DataHub:
         tmp_set = self.__set_type_map[source]
         student_id = np.unique(tmp_set[:, 0].T)
 
+        np.random.seed(seed)
         candidate = np.random.choice(student_id,
-                                     size=int(slice_out * len(student_id)), replace=False)
+                                     size=int(slice_out * len(student_id)), replace=False,)
 
         self.__set_type_map[to[0]] = tmp_set[np.isin(tmp_set[:, 0], candidate)]
         self.__set_type_map[to[1]] = tmp_set[~np.isin(tmp_set[:, 0], candidate)]
