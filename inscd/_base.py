@@ -2,19 +2,24 @@ from abc import abstractmethod
 
 from . import listener
 from . import ruler
+from . import unifier
 
 
-class _InteractionFunction:
+class _Extractor:
     @abstractmethod
-    def fit(self, datahub, set_type, **kwargs):
-        ...
-
-    @abstractmethod
-    def compute(self, datahub, set_type, **kwargs):
+    def extract(self, **kwargs):
         ...
 
     @abstractmethod
     def __getitem__(self, item):
+        ...
+
+class _InteractionFunction:
+    @abstractmethod
+    def compute(self, **kwargs):
+        ...
+
+    def monotonicity(self):
         ...
 
 
@@ -27,25 +32,26 @@ class _CognitiveDiagnosisModel:
         self.method = ...
         self.device: str = ...
         self.inter_func: _InteractionFunction = ...
+        self.extractor: _Extractor = ...
 
     def _train(self, datahub, set_type="train",
                valid_set_type=None, valid_metrics=None, **kwargs):
-        if self.inter_func is Ellipsis:
+        if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
-        self.inter_func.fit(datahub, set_type, **kwargs)
+        unifier.train(datahub, set_type, self.extractor, self.inter_func, **kwargs)
         if valid_set_type is not None:
             self.score(datahub, valid_set_type, valid_metrics, **kwargs)
 
     def _predict(self, datahub, set_type: str, **kwargs):
-        if self.inter_func is Ellipsis:
+        if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
-        return self.inter_func.compute(datahub, set_type, **kwargs)
+        return unifier.predict(datahub, set_type, self.extractor, self.inter_func, **kwargs)
 
     @listener
     def _score(self, datahub, set_type: str, metrics: list, **kwargs):
-        if self.inter_func is Ellipsis:
+        if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
-        pred_r = self.inter_func.compute(datahub, set_type, **kwargs)
+        pred_r = unifier.predict(datahub, set_type, self.extractor, self.inter_func, **kwargs)
         return ruler(self, datahub, set_type, pred_r, metrics)
 
     @abstractmethod
@@ -69,9 +75,9 @@ class _CognitiveDiagnosisModel:
         ...
 
     @abstractmethod
-    def load(self, path: str):
+    def load(self, ex_path: str, if_path: str):
         ...
 
     @abstractmethod
-    def save(self, path: str):
+    def save(self, ex_path: str, if_path: str):
         ...
