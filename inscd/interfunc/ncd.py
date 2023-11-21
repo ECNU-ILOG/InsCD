@@ -65,6 +65,7 @@ class NCD_IF(_InteractionFunction, nn.Module):
             if 'weight' in name:
                 nn.init.xavier_normal_(param)
 
+
     def forward(self, student_id, exercise_id, q_mask):
         student_emb = torch.sigmoid(self.__student_emb(student_id))
         diff_emb = torch.sigmoid(self.__diff_emb(exercise_id))

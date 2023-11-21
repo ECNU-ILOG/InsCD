@@ -1,13 +1,13 @@
 import wandb
 
 from pprint import pprint
-from inteledu import listener
-from inteledu.datahub import DataHub
-from inteledu.models.static.neural import NCDM
+from inscd import listener
+from inscd.datahub import DataHub
+from inscd.models.static.neural import NCDM
 
-wandb.init(
-    project="test inteledu"
-)
+# wandb.init(
+#     project="test inscd"
+# )
 
 listener.update(print)
 
