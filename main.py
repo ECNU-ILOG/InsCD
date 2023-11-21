@@ -12,11 +12,11 @@ wandb.init(
 listener.update(print)
 
 datahub = DataHub("datasets/Math2")
-datahub.random_split(source="valid", to=["valid", "test"])
+datahub.random_split(source="total", to=["train", "test"])
 print("Number of response logs {}".format(len(datahub)))
 
 ncdm = NCDM(datahub.student_num, datahub.exercise_num, datahub.knowledge_num)
 ncdm.build()
-ncdm.train(datahub, "train", "valid")
+ncdm.train(datahub, "train", "test")
 test_results = ncdm.score(datahub, "test", metrics=["acc", "doa"])
 pprint(test_results)
