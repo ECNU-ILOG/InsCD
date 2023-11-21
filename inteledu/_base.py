@@ -29,7 +29,7 @@ class _CognitiveDiagnosisModel:
         self.inter_func: _InteractionFunction = ...
 
     def _train(self, datahub, set_type="train",
-                valid_set_type=None, valid_metrics=None, **kwargs):
+               valid_set_type=None, valid_metrics=None, **kwargs):
         if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         self.inter_func.fit(datahub, set_type, **kwargs)
@@ -43,7 +43,7 @@ class _CognitiveDiagnosisModel:
 
     @listener
     def _score(self, datahub, set_type: str, metrics: list, **kwargs):
-        if self.inter_func is  Ellipsis:
+        if self.inter_func is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         pred_r = self.inter_func.compute(datahub, set_type, **kwargs)
         return ruler(self, datahub, set_type, pred_r, metrics)
@@ -61,7 +61,7 @@ class _CognitiveDiagnosisModel:
         ...
 
     @abstractmethod
-    def score(self, datahub, set_type, metrics: list,  **kwargs)->dict:
+    def score(self, datahub, set_type, metrics: list, **kwargs) -> dict:
         ...
 
     @abstractmethod

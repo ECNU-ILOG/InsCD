@@ -6,6 +6,7 @@ from ...._base import _CognitiveDiagnosisModel
 from ....datahub import DataHub
 from ....interfunc import NCD_IF
 
+
 class NCDM(_CognitiveDiagnosisModel):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
         """
@@ -23,7 +24,8 @@ class NCDM(_CognitiveDiagnosisModel):
             Not used, present here for API consistency by convention.
         """
         super().__init__(student_num, exercise_num, knowledge_num)
-    def build(self, hidden_dims: list=None, dropout=0.5, device="cpu", dtype=torch.float32, **kwargs):
+
+    def build(self, hidden_dims: list = None, dropout=0.5, device="cpu", dtype=torch.float32, **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
@@ -38,21 +40,21 @@ class NCDM(_CognitiveDiagnosisModel):
     def train(self, datahub: DataHub, set_type="train", valid_set_type="valid",
               valid_metrics=None, epoch=10, lr=0.01, weight_decay=0.0005, batch_size=256):
         if valid_metrics is None:
-            valid_metrics = ["acc", "auc", "f1", "doa"]
+            valid_metrics = ["acc", "auc", "f1", "doa", 'ap']
         loss_func = nn.BCELoss()
-        optimizer = optim.Adam(self.inter_func.parameters(),lr=lr, weight_decay=weight_decay)
+        optimizer = optim.Adam(self.inter_func.parameters(), lr=lr, weight_decay=weight_decay)
         for epoch_i in range(0, epoch):
             print("[Epoch {}]".format(epoch_i + 1))
             self._train(datahub=datahub, set_type=set_type,
-                         valid_set_type=valid_set_type, valid_metrics=valid_metrics,
-                         batch_size=256, loss_func=loss_func, optimizer=optimizer)
+                        valid_set_type=valid_set_type, valid_metrics=valid_metrics,
+                        batch_size=256, loss_func=loss_func, optimizer=optimizer)
 
     def predict(self, datahub: DataHub, set_type, batch_size=256, **kwargs):
         return self._predict(datahub=datahub, set_type=set_type, batch_size=batch_size)
 
     def score(self, datahub: DataHub, set_type, metrics: list, batch_size=256, **kwargs) -> dict:
         if metrics is None:
-            metrics = ["acc", "auc", "f1", "doa"]
+            metrics = ["acc", "auc", "f1", "doa", 'ap']
         return self._score(datahub=datahub, set_type=set_type, metrics=metrics, batch_size=256)
 
     def diagnose(self):

@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import accuracy_score, roc_auc_score, mean_squared_error
+from sklearn.metrics import accuracy_score, roc_auc_score, mean_squared_error, average_precision_score
 from sklearn.metrics import f1_score as f1
 from joblib import Parallel, delayed
 
@@ -20,7 +20,8 @@ class _Ruler:
             "f1": self.f1_score,
             "rmse": self.root_mean_square_error,
             "doa": self.degree_of_agreement,
-            "mad": self.mean_average_distance
+            "mad": self.mean_average_distance,
+            'ap': self.average_precision_score
         }
 
     def accuracy(self, true_r, pred_r):
@@ -32,6 +33,9 @@ class _Ruler:
 
     def f1_score(self, true_r, pred_r):
         return f1(true_r, np.array(pred_r) >= self.threshold)
+    @staticmethod
+    def average_precision_score(true_r, pred_r):
+        return average_precision_score(true_r, pred_r)
 
     @staticmethod
     def root_mean_square_error(true_r, pred_r):
@@ -126,7 +130,7 @@ class _Ruler:
         true_r = datahub.detach_labels(set_type)
         results = {}
         for metric in metrics:
-            if metric in ["acc", "auc", "f1", "rmse"]:
+            if metric in ["acc", "auc", "f1", "rmse", 'ap']:
                 results[metric] = self.__method_map[metric](true_r, pred_r)
             elif metric in ["doa"]:
                 results[metric] = self.__method_map[metric](mastery_level, datahub, set_type)
