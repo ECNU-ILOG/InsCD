@@ -1,0 +1,12 @@
+{
+  "dataset": "EdNet-1",
+  "files": {
+    "q_matrix": "q_matrix.csv",
+    "response": "response.csv"
+  },
+  "info": {
+    "student_num": 1827,
+    "exercise_num": 11996,
+    "knowledge_num": 189
+  }
+}
