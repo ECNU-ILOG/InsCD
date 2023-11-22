@@ -22,6 +22,9 @@ class _InteractionFunction:
     def monotonicity(self):
         ...
 
+    def transform(self, mastery, knowledge):
+        ...
+
 
 class _CognitiveDiagnosisModel:
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
