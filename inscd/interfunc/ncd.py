@@ -57,6 +57,9 @@ class NCD_IF(_InteractionFunction, nn.Module):
         input_x = torch.sigmoid(disc_ts) * (torch.sigmoid(student_ts) - torch.sigmoid(diff_ts)) * q_mask
         return self.mlp(input_x).view(-1)
 
+    def transform(self, mastery, knowledge):
+        return mastery
+
     def monotonicity(self):
         for layer in self.mlp:
             if isinstance(layer, nn.Linear):

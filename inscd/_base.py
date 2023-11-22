@@ -19,10 +19,11 @@ class _InteractionFunction:
     def compute(self, **kwargs):
         ...
 
-    def monotonicity(self):
+    @abstractmethod
+    def transform(self, mastery, knowledge):
         ...
 
-    def transform(self, mastery, knowledge):
+    def monotonicity(self):
         ...
 
 

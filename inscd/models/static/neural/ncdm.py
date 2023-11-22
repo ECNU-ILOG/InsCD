@@ -70,7 +70,8 @@ class NCDM(_CognitiveDiagnosisModel):
     def diagnose(self):
         if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
-        return self.extractor["mastery"]
+        return self.inter_func.transform(self.extractor["mastery"],
+                                         self.extractor["knowledge"])
 
     def load(self, ex_path: str, if_path: str):
         if self.inter_func is Ellipsis or self.extractor is Ellipsis:
