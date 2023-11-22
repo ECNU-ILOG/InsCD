@@ -26,7 +26,7 @@ class NCDM(_CognitiveDiagnosisModel):
         """
         super().__init__(student_num, exercise_num, knowledge_num)
 
-    def build(self, hidden_dims: list = None, dropout=0.5, device="cpu", dtype=torch.float32, **kwargs):
+    def build(self, hidden_dims: list = None, dropout=0.5, device="cpu", dtype=torch.float64, **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
@@ -45,14 +45,14 @@ class NCDM(_CognitiveDiagnosisModel):
                                  dtype=dtype)
 
     def train(self, datahub: DataHub, set_type="train", valid_set_type="valid",
-              valid_metrics=None, epoch=10, lr=0.01, weight_decay=0.0005, batch_size=256):
+              valid_metrics=None, epoch=10, lr=2e-3, weight_decay=0.0005, batch_size=256):
         if valid_metrics is None:
             valid_metrics = ["acc", "auc", "f1", "doa", 'ap']
         loss_func = nn.BCELoss()
         optimizer = optim.Adam([{'params': self.extractor.parameters(),
-                                 'lr': lr, 'weight_decay': weight_decay},
+                                 'lr': lr},
                                 {'params': self.inter_func.parameters(),
-                                 'lr': lr, 'weight_decay': weight_decay}                                ])
+                                 'lr': lr}])
         for epoch_i in range(0, epoch):
             print("[Epoch {}]".format(epoch_i + 1))
             self._train(datahub=datahub, set_type=set_type,
@@ -71,7 +71,7 @@ class NCDM(_CognitiveDiagnosisModel):
         if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
         return self.inter_func.transform(self.extractor["mastery"],
-                                         self.extractor["knowledge"])
+                                         self.extractor["knowledge"]).detach().cpu().numpy()
 
     def load(self, ex_path: str, if_path: str):
         if self.inter_func is Ellipsis or self.extractor is Ellipsis:

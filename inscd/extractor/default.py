@@ -25,6 +25,9 @@ class Default(_Extractor, nn.Module):
             "disc": self.__disc_emb,
             "knowledge": self.__knowledge_emb
         }
+        for name, param in self.named_parameters():
+            if 'weight' in name:
+                nn.init.xavier_normal_(param)
 
     def extract(self, student_id, exercise_id, q_mask):
         student_ts = self.__student_emb(student_id)
@@ -36,5 +39,6 @@ class Default(_Extractor, nn.Module):
     def __getitem__(self, item):
         if item not in self.__emb_map.keys():
             raise ValueError("We can detach {} from embeddings.".format(self.__emb_map.keys()))
-        return torch.sigmoid(self.__emb_map[item].weight.detach().cpu()).numpy()
+        return self.__emb_map[item].weight
+        # return torch.sigmoid(self.__emb_map[item].weight.detach().cpu()).numpy()
 

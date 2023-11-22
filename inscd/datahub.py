@@ -79,8 +79,8 @@ class DataHub:
                              "the parameter \"dataset\" is one of the {}".format(source, self.__set_type_map.keys()))
 
         tmp_set = self.__set_type_map[source]
-        set0, set1 = train_test_split(tmp_set, shuffle=True,
-                                      train_size=int(slice_out * self.__set_type_map[source].shape[0]),
+        set0, set1 = train_test_split(tmp_set,
+                                      train_size=int(slice_out * self.__set_type_map[source].shape[0]), shuffle=True,
                                       random_state=seed)
 
         self.__set_type_map[to[0]] = set0
