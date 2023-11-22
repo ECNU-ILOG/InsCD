@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, mean_squared_error, a
 from sklearn.metrics import f1_score as f1
 from joblib import Parallel, delayed
 
+
 class _Ruler:
     """
     Description:
@@ -33,6 +34,7 @@ class _Ruler:
 
     def f1_score(self, true_r, pred_r):
         return f1(true_r, np.array(pred_r) >= self.threshold)
+
     @staticmethod
     def average_precision_score(true_r, pred_r):
         return average_precision_score(true_r, pred_r)
@@ -40,7 +42,6 @@ class _Ruler:
     @staticmethod
     def root_mean_square_error(true_r, pred_r):
         return np.sqrt(mean_squared_error(true_r, pred_r))
-
 
     @staticmethod
     def __calculate_doa_k(mas_level, q_matrix, r_matrix, k):

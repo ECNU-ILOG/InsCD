@@ -26,14 +26,17 @@ class Default(_Extractor, nn.Module):
         self.__disc_emb = nn.Embedding(self.exercise_num, 1, dtype=self.dtype).to(self.device)
 
         self.__emb_map = {
-            "mastery": self.__student_emb,
-            "diff": self.__diff_emb,
-            "disc": self.__disc_emb,
-            "knowledge": self.__knowledge_emb
+            "mastery": self.__student_emb.weight,
+            "diff": self.__diff_emb.weight,
+            "disc": self.__disc_emb.weight,
+            "knowledge": self.__knowledge_emb.weight
         }
-        for name, param in self.named_parameters():
-            if 'weight' in name:
-                nn.init.xavier_normal_(param)
+        self.apply(self.initialize_weights)
+
+    @staticmethod
+    def initialize_weights(module):
+        if isinstance(module, (nn.Linear, nn.Embedding)):
+            nn.init.xavier_normal_(module.weight)
 
     def extract(self, student_id, exercise_id, q_mask):
         student_ts = self.__student_emb(student_id)
@@ -44,10 +47,10 @@ class Default(_Extractor, nn.Module):
 
     def __getitem__(self, item):
         if item not in self.__emb_map.keys():
-            raise ValueError("We can detach {} from embeddings.".format(self.__emb_map.keys()))
-        self.__emb_map["mastery"] = self.__student_emb
-        self.__emb_map["diff"] = self.__diff_emb
-        self.__emb_map["disc"] = self.__disc_emb
-        self.__emb_map["knowledge"] = self.__knowledge_emb
-        return self.__emb_map[item].weight
+            raise ValueError("We can only detach {} from embeddings.".format(self.__emb_map.keys()))
+        self.__emb_map["mastery"] = self.__student_emb.weight
+        self.__emb_map["diff"] = self.__diff_emb.weight
+        self.__emb_map["disc"] = self.__disc_emb.weight
+        self.__emb_map["knowledge"] = self.__knowledge_emb.weight
+        return self.__emb_map[item]
 
