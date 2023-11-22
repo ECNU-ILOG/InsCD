@@ -39,6 +39,9 @@ class Default(_Extractor, nn.Module):
     def __getitem__(self, item):
         if item not in self.__emb_map.keys():
             raise ValueError("We can detach {} from embeddings.".format(self.__emb_map.keys()))
+        self.__emb_map["mastery"] = self.__student_emb
+        self.__emb_map["diff"] = self.__diff_emb
+        self.__emb_map["disc"] = self.__disc_emb
+        self.__emb_map["knowledge"] = self.__knowledge_emb
         return self.__emb_map[item].weight
-        # return torch.sigmoid(self.__emb_map[item].weight.detach().cpu()).numpy()
 
