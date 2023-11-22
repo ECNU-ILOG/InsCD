@@ -7,7 +7,7 @@ import scipy.sparse as sp
 from ...._base import _CognitiveDiagnosisModel
 from ....datahub import DataHub
 from ....interfunc import NCD_IF, DP_IF
-from ....extractor import ULCDF_EXTRACTOR
+from ....extractor import ULCDF_Extractor
 
 
 class ULCDF(_CognitiveDiagnosisModel):
@@ -34,7 +34,7 @@ class ULCDF(_CognitiveDiagnosisModel):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
-        self.extractor = ULCDF_EXTRACTOR(
+        self.extractor = ULCDF_Extractor(
             student_num=self.student_num,
             exercise_num=self.exercise_num,
             knowledge_num=self.knowledge_num,

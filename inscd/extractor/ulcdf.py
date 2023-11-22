@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from .._base import _Extractor
 
 
-class ULCDF_EXTRACTOR(_Extractor, nn.Module):
+class ULCDF_Extractor(_Extractor, nn.Module):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, latent_dim: int, device,
                  dtype, gcn_layers=3, keep_prob=0.9, leaky=0.8, mode='all'):
         super().__init__()
