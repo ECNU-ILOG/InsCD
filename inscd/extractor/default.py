@@ -5,7 +5,7 @@ from .._base import _Extractor
 
 
 class Default(_Extractor, nn.Module):
-    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, device, dtype):
+    def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, device, dtype, latent_dim=None):
         super().__init__()
         self.student_num = student_num
         self.exercise_num = exercise_num
@@ -14,9 +14,15 @@ class Default(_Extractor, nn.Module):
         self.device = device
         self.dtype = dtype
 
-        self.__student_emb = nn.Embedding(self.student_num, self.knowledge_num, dtype=self.dtype).to(self.device)
-        self.__knowledge_emb = nn.Embedding(self.knowledge_num, self.knowledge_num, dtype=self.dtype).to(self.device)
-        self.__diff_emb = nn.Embedding(self.exercise_num, self.knowledge_num, dtype=self.dtype).to(self.device)
+        if latent_dim is None:
+            self.latent_dim = knowledge_num
+        else:
+            self.latent_dim = latent_dim
+        torch.set_default_dtype(torch.float64)
+
+        self.__student_emb = nn.Embedding(self.student_num, self.latent_dim, dtype=self.dtype).to(self.device)
+        self.__knowledge_emb = nn.Embedding(self.knowledge_num, self.latent_dim, dtype=self.dtype).to(self.device)
+        self.__diff_emb = nn.Embedding(self.exercise_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__disc_emb = nn.Embedding(self.exercise_num, 1, dtype=self.dtype).to(self.device)
 
         self.__emb_map = {
