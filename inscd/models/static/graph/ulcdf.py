@@ -2,7 +2,6 @@ import torch
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.functional as F
 import scipy.sparse as sp
 
 from ...._base import _CognitiveDiagnosisModel
@@ -29,7 +28,7 @@ class ULCDF(_CognitiveDiagnosisModel):
         """
         super().__init__(student_num, exercise_num, knowledge_num)
 
-    def build(self, latent_dim=32, device: str = "cpu", gcn_layers: int = 3, predictor_type='dp-linear',
+    def build(self, latent_dim=32, device: str = "cpu", gcn_layers: int = 3, if_type='dp-linear',
               weight_reg=0.05, leaky=0.8,
               keep_prob=0.9, mode='all', dtype=torch.float64, hidden_dims: list = None, **kwargs):
         if hidden_dims is None:
@@ -49,19 +48,19 @@ class ULCDF(_CognitiveDiagnosisModel):
         )
         self.mode = mode
         self.device = device
-        if predictor_type == 'ncd':
+        if if_type == 'ncd':
             self.inter_func = NCD_IF(knowledge_num=self.knowledge_num,
                                      hidden_dims=hidden_dims,
                                      dropout=0,
                                      device=device,
                                      dtype=dtype)
-        elif 'dp' in predictor_type:
+        elif 'dp' in if_type:
             self.inter_func = DP_IF(knowledge_num=self.knowledge_num,
                                     hidden_dims=hidden_dims,
                                     dropout=0,
                                     device=device,
                                     dtype=dtype,
-                                    kernel=predictor_type)
+                                    kernel=if_type)
         else:
             raise ValueError('We do not support such method')
 
