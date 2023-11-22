@@ -113,7 +113,7 @@ class ULCDF_EXTRACTOR(_Extractor, nn.Module):
         stus_forward = self.transfer_student_layer(
             stus) if self.mode != 'tf' else stus
         exers_forward = self.transfer_exercise_layer(
-           exers) if self.mode != 'tf' else  exers
+           exers) if self.mode != 'tf' else exers
         knows_forward = self.transfer_knowledge_layer(knows) if self.mode != 'tf' else knows
         self.__emb_map['mastery'] = stus_forward
         self.__emb_map['diff'] = exers_forward
