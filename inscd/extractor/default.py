@@ -27,10 +27,10 @@ class Default(_Extractor, nn.Module):
         }
 
     def extract(self, student_id, exercise_id, q_mask):
-        student_ts = torch.sigmoid(self.__student_emb(student_id))
-        diff_ts = torch.sigmoid(self.__diff_emb(exercise_id))
-        disc_ts = torch.sigmoid(self.__disc_emb(exercise_id))
-        knowledge_ts = torch.sigmoid(self.__knowledge_emb.weight)
+        student_ts = self.__student_emb(student_id)
+        diff_ts = self.__diff_emb(exercise_id)
+        disc_ts = self.__disc_emb(exercise_id)
+        knowledge_ts = self.__knowledge_emb.weight
         return student_ts, diff_ts, disc_ts, knowledge_ts
 
     def __getitem__(self, item):
