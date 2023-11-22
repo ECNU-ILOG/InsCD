@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 from collections import OrderedDict
@@ -53,7 +54,7 @@ class NCD_IF(_InteractionFunction, nn.Module):
         diff_ts = kwargs["diff_ts"]
         disc_ts = kwargs["disc_ts"]
         q_mask = kwargs["q_mask"]
-        input_x = disc_ts * (student_ts - diff_ts) * q_mask
+        input_x = torch.sigmoid(disc_ts) * (torch.sigmoid(student_ts) - torch.sigmoid(diff_ts)) * q_mask
         return self.mlp(input_x).view(-1)
 
     def monotonicity(self):

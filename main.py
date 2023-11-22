@@ -11,7 +11,7 @@ from inscd.models.static.neural import NCDM
 
 listener.update(print)
 
-datahub = DataHub("datasets/Math2")
+datahub = DataHub("datasets/Math1")
 datahub.random_split(source="total", to=["train", "test"])
 print("Number of response logs {}".format(len(datahub)))
 
