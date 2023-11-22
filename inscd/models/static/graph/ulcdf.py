@@ -15,7 +15,7 @@ class ULCDF(_CognitiveDiagnosisModel):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
         """
         Description:
-        NCDM ...
+        ULCDF ...
 
         Parameters:
         student_num: int type
@@ -29,7 +29,7 @@ class ULCDF(_CognitiveDiagnosisModel):
         """
         super().__init__(student_num, exercise_num, knowledge_num)
 
-    def build(self, latent_dim, device: str = "cpu", gcn_layers: int = 3, predictor_type='dp-linear',
+    def build(self, latent_dim=32, device: str = "cpu", gcn_layers: int = 3, predictor_type='dp-linear',
               weight_reg=0.05, leaky=0.8,
               keep_prob=0.9, mode='all', dtype=torch.float64, hidden_dims: list = None, **kwargs):
         if hidden_dims is None:
