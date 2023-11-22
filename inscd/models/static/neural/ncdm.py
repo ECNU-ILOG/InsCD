@@ -26,7 +26,7 @@ class NCDM(_CognitiveDiagnosisModel):
         """
         super().__init__(student_num, exercise_num, knowledge_num)
 
-    def build(self, hidden_dims: list = None, dropout=0.5, device="cpu", dtype=torch.float64, **kwargs):
+    def build(self, hidden_dims: list = None, dropout=0.5, device="cpu", dtype=torch.float32, **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
@@ -50,9 +50,9 @@ class NCDM(_CognitiveDiagnosisModel):
             valid_metrics = ["acc", "auc", "f1", "doa", 'ap']
         loss_func = nn.BCELoss()
         optimizer = optim.Adam([{'params': self.extractor.parameters(),
-                                 'lr': lr},
+                                 'lr': lr, "weight_decay": weight_decay},
                                 {'params': self.inter_func.parameters(),
-                                 'lr': lr}])
+                                 'lr': lr, "weight_decay": weight_decay}])
         for epoch_i in range(0, epoch):
             print("[Epoch {}]".format(epoch_i + 1))
             self._train(datahub=datahub, set_type=set_type,

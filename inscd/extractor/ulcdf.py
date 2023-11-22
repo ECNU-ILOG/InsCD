@@ -6,7 +6,7 @@ from .._base import _Extractor
 
 class ULCDF_Extractor(_Extractor, nn.Module):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, latent_dim: int, device,
-                 dtype, gcn_layers=3, keep_prob=0.9, leaky=0.8, mode='all'):
+                 dtype, gcn_layers=3, keep_prob=0.9, leaky=0.8):
         super().__init__()
         self.student_num = student_num
         self.exercise_num = exercise_num
@@ -18,27 +18,25 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.gcn_layers = gcn_layers
         self.keep_prob = keep_prob
         self.leaky = leaky
-        self.mode = mode
         self.gcn_drop = True
-        torch.set_default_dtype(torch.float64)
+        self.graph_dict = ...
 
         self.__student_emb = nn.Embedding(self.student_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__knowledge_emb = nn.Embedding(self.knowledge_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__exercise_emb = nn.Embedding(self.exercise_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__disc_emb = nn.Embedding(self.exercise_num, 1, dtype=self.dtype).to(self.device)
-        self.__emb_map = {}
-        # self.__emb_map = {
-        #     "student": self.__student_emb,
-        #     "exercise": self.__exercise_emb,
-        #     "disc": self.__disc_emb,
-        #     "knowledge": self.__knowledge_emb
-        # }
+        self.__emb_map = {
+            "student": self.__student_emb.weight,
+            "exercise": self.__exercise_emb.weight,
+            "disc": self.__disc_emb.weight,
+            "knowledge": self.__knowledge_emb.weight
+        }
 
-        self.concat_layer = nn.Linear(2 * self.latent_dim, self.latent_dim).to(self.device)
-        self.concat_layer_1 = nn.Linear(2 * self.latent_dim, self.latent_dim).to(self.device)
-        self.transfer_student_layer = nn.Linear(self.latent_dim, self.knowledge_num).to(self.device)
-        self.transfer_exercise_layer = nn.Linear(self.latent_dim, self.knowledge_num).to(self.device)
-        self.transfer_knowledge_layer = nn.Linear(self.latent_dim, self.knowledge_num).to(self.device)
+        self.concat_layer = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
+        self.concat_layer_1 = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
+        self.transfer_student_layer = nn.Linear(self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.transfer_exercise_layer = nn.Linear(self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.transfer_knowledge_layer = nn.Linear(self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
         self.apply(self.initialize_weights)
 
     @staticmethod
@@ -50,35 +48,30 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.graph_dict = graph_dict
 
     def convolution(self, graph):
-        stu_emb, exer_emb, know_emb = (self.__student_emb.weight, self.__exercise_emb.weight
-                                       , self.__knowledge_emb.weight)
+        stu_emb, exer_emb, know_emb = (self.__student_emb.weight,
+                                       self.__exercise_emb.weight,
+                                       self.__knowledge_emb.weight)
         all_emb = torch.cat([stu_emb, exer_emb, know_emb]).to(self.device)
-        embs = [all_emb]
+        emb = [all_emb]
         for layer in range(self.gcn_layers):
-            all_emb = torch.sparse.mm(self.graph_drop(graph), all_emb)
-            embs.append(all_emb)
-        out_embs = torch.mean(torch.stack(embs, dim=1), dim=1)
-        return out_embs
+            all_emb = torch.sparse.mm(self.__graph_drop(graph), all_emb)
+            emb.append(all_emb)
+        out_emb = torch.mean(torch.stack(emb, dim=1), dim=1)
+        return out_emb
 
-    def _common_foward(self):
-        out_hol_embs, right_embs, wrong_embs = self.convolution(self.graph_dict['all']), self.convolution(
+    def __common_forward(self):
+        out_hol_emb, right_emb, wrong_emb = self.convolution(self.graph_dict['all']), self.convolution(
             self.graph_dict['right']), self.convolution(self.graph_dict['wrong'])
-        if self.mode == 'dis':
-            out_embs = F.leaky_relu(self.concat_layer(torch.cat([right_embs, wrong_embs], dim=1)),
-                                    negative_slope=self.leaky)
-        elif self.mode == 'hol':
-            out_embs = out_hol_embs
-        else:
-            out_dis_embs = F.leaky_relu(self.concat_layer(torch.cat([right_embs, wrong_embs], dim=1)),
-                                        negative_slope=self.leaky)
-            out_embs = F.leaky_relu(
-                self.concat_layer_1(torch.cat([out_dis_embs, out_hol_embs], dim=1)),
-                negative_slope=self.leaky)
+        out_dis_emb = F.leaky_relu(self.concat_layer(torch.cat([right_emb, wrong_emb], dim=1)),
+                                   negative_slope=self.leaky)
+        out_emb = F.leaky_relu(self.concat_layer_1(torch.cat([out_dis_emb, out_hol_emb], dim=1)),
+                               negative_slope=self.leaky)
 
-        stus, exers, knows = torch.split(out_embs, [self.student_num, self.exercise_num, self.knowledge_num])
-        return stus, exers, knows
+        student_ts, exercise_ts, knowledge_ts = torch.split(out_emb,
+                                                            [self.student_num, self.exercise_num, self.knowledge_num])
+        return student_ts, exercise_ts, knowledge_ts
 
-    def _dropout(self, graph, keep_prob):
+    def __dropout(self, graph, keep_prob):
         if self.gcn_drop and self.training:
             size = graph.size()
             index = graph.indices().t()
@@ -87,40 +80,34 @@ class ULCDF_Extractor(_Extractor, nn.Module):
             random_index = random_index.int().bool()
             index = index[random_index]
             values = values[random_index] / keep_prob
-            g = torch.sparse.DoubleTensor(index.t(), values, size)
+            g = torch.sparse.Tensor(index.t(), values, size)
             return g
         else:
             return graph
 
-    def graph_drop(self, graph):
-        g_droped = self._dropout(graph, self.keep_prob)
-        return g_droped
+    def __graph_drop(self, graph):
+        g_dropped = self.__dropout(graph, self.keep_prob)
+        return g_dropped
 
     def extract(self, student_id, exercise_id, q_mask):
-        stus, exers, knows = self._common_foward()
-        batch_stus_forward = self.transfer_student_layer(
-            F.embedding(student_id, stus)) if self.mode != 'tf' else F.embedding(
-            student_id, stus)
-        batch_exers_forward = self.transfer_exercise_layer(
-            F.embedding(exercise_id, exers)) if self.mode != 'tf' else F.embedding(exercise_id, exers)
-        knows_forward = self.transfer_knowledge_layer(knows) if self.mode != 'tf' else knows
+        stu_forward, exer_forward, knows_forward = self.__common_forward()
+        student_ts = self.transfer_student_layer(F.embedding(student_id, stu_forward))
+        diff_ts = self.transfer_exercise_layer(F.embedding(exercise_id, exer_forward))
+        knowledge_ts = self.transfer_knowledge_layer(knows_forward)
         disc_ts = self.__disc_emb(exercise_id)
 
-        return batch_stus_forward, batch_exers_forward, disc_ts, knows_forward
-
-    def set_results(self):
-        stus, exers, knows = self._common_foward()
-        stus_forward = self.transfer_student_layer(
-            stus) if self.mode != 'tf' else stus
-        exers_forward = self.transfer_exercise_layer(
-           exers) if self.mode != 'tf' else exers
-        knows_forward = self.transfer_knowledge_layer(knows) if self.mode != 'tf' else knows
-        self.__emb_map['mastery'] = stus_forward
-        self.__emb_map['diff'] = exers_forward
-        self.__emb_map['knowledge'] = knows_forward
+        return student_ts, diff_ts, disc_ts, knowledge_ts
 
     def __getitem__(self, item):
         if item not in self.__emb_map.keys():
-            raise ValueError("We can detach {} from embeddings.".format(self.__emb_map.keys()))
+            raise ValueError("We can only detach {} from embeddings.".format(self.__emb_map.keys()))
+        stu_forward, exer_forward, know_forward = self.__common_forward()
+        student_ts = self.transfer_student_layer(stu_forward)
+        diff_ts = self.transfer_exercise_layer(exer_forward)
+        knowledge_ts = self.transfer_knowledge_layer(know_forward)
+        disc_ts = self.__disc_emb.weight
+        self.__emb_map["mastery"] = student_ts
+        self.__emb_map["diff"] = diff_ts
+        self.__emb_map["disc"] = disc_ts
+        self.__emb_map["knowledge"] = knowledge_ts
         return self.__emb_map[item]
-        # return torch.sigmoid(self.__emb_map[item].weight.detach().cpu()).numpy()
