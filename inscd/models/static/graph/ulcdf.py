@@ -6,7 +6,7 @@ import scipy.sparse as sp
 
 from ...._base import _CognitiveDiagnosisModel
 from ....datahub import DataHub
-from ....interfunc import NCD_IF, DP_IF
+from ....interfunc import NCD_IF, DP_IF, MIRT_IF
 from ....extractor import ULCDF_Extractor
 
 
@@ -43,7 +43,6 @@ class ULCDF(_CognitiveDiagnosisModel):
             dtype=dtype,
             gcn_layers=gcn_layers,
             keep_prob=keep_prob,
-            leaky=leaky
         )
         self.device = device
         if if_type == 'ncd':
@@ -59,6 +58,8 @@ class ULCDF(_CognitiveDiagnosisModel):
                                     device=device,
                                     dtype=dtype,
                                     kernel=if_type)
+        elif 'mirt' in if_type:
+            self.inter_func = MIRT_IF(device=device, dtype=dtype)
         else:
             raise ValueError("Remain to be aligned....")
 
@@ -116,7 +117,6 @@ class ULCDF(_CognitiveDiagnosisModel):
     def diagnose(self):
         if self.inter_func is Ellipsis or self.extractor is Ellipsis:
             raise RuntimeError("Call \"build\" method to build interaction function before calling this method.")
-        self.extractor.set_results()
         return self.inter_func.transform(self.extractor["mastery"],
                                          self.extractor["knowledge"]).detach().cpu().numpy()
 

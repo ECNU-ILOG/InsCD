@@ -65,11 +65,12 @@ class KANCD_IF(_InteractionFunction, nn.Module):
         stu_emb = student_ts.view(batch, 1, dim).repeat(1, self.knowledge_num, 1)
         knowledge_emb = knowledge_ts.repeat(batch, 1).view(batch, self.knowledge_num, -1)
         exer_emb = diff_ts.view(batch, 1, dim).repeat(1, self.knowledge_num, 1)
-        input_x = torch.sigmoid(disc_ts) * (F.sigmoid(self.stat_full(stu_emb * knowledge_emb).view(batch, -1))
-                                            - F.sigmoid(self.k_diff_full(exer_emb * knowledge_emb).view(batch, -1))) * q_mask
+        input_x = torch.sigmoid(disc_ts) * (torch.sigmoid(self.stat_full(stu_emb * knowledge_emb)).view(batch, -1)
+                                            - torch.sigmoid(self.k_diff_full(exer_emb * knowledge_emb)).view(batch, -1)) * q_mask
         return self.mlp(input_x).view(-1)
 
     def transform(self, mastery, knowledge):
+        self.eval()
         blocks = torch.split(torch.arange(mastery.shape[0]).to(device=self.device), 5)
         mas = []
         for block in blocks:

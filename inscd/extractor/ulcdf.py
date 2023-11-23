@@ -6,7 +6,7 @@ from .._base import _Extractor
 
 class ULCDF_Extractor(_Extractor, nn.Module):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, latent_dim: int, device,
-                 dtype, gcn_layers=3, keep_prob=0.9, leaky=0.8):
+                 dtype, gcn_layers=3, keep_prob=0.9):
         super().__init__()
         self.student_num = student_num
         self.exercise_num = exercise_num
@@ -17,7 +17,6 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.dtype = dtype
         self.gcn_layers = gcn_layers
         self.keep_prob = keep_prob
-        self.leaky = leaky
         self.gcn_drop = True
         self.graph_dict = ...
 
@@ -26,11 +25,12 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.__exercise_emb = nn.Embedding(self.exercise_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__disc_emb = nn.Embedding(self.exercise_num, 1, dtype=self.dtype).to(self.device)
         self.__emb_map = {
-            "student": self.__student_emb.weight,
-            "exercise": self.__exercise_emb.weight,
+            "mastery": self.__student_emb.weight,
+            "diff": self.__exercise_emb.weight,
             "disc": self.__disc_emb.weight,
             "knowledge": self.__knowledge_emb.weight
         }
+        self.PreLU = nn.PReLU()
 
         self.concat_layer = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
         self.concat_layer_1 = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
@@ -62,10 +62,10 @@ class ULCDF_Extractor(_Extractor, nn.Module):
     def __common_forward(self):
         out_hol_emb, right_emb, wrong_emb = self.convolution(self.graph_dict['all']), self.convolution(
             self.graph_dict['right']), self.convolution(self.graph_dict['wrong'])
-        out_dis_emb = F.leaky_relu(self.concat_layer(torch.cat([right_emb, wrong_emb], dim=1)),
-                                   negative_slope=self.leaky)
-        out_emb = F.leaky_relu(self.concat_layer_1(torch.cat([out_dis_emb, out_hol_emb], dim=1)),
-                               negative_slope=self.leaky)
+        out_dis_emb = F.elu(self.concat_layer(torch.cat([right_emb, wrong_emb], dim=1))
+                                 )
+        out_emb = F.elu(self.concat_layer_1(torch.cat([out_dis_emb, out_hol_emb], dim=1))
+                          )
 
         student_ts, exercise_ts, knowledge_ts = torch.split(out_emb,
                                                             [self.student_num, self.exercise_num, self.knowledge_num])
@@ -80,7 +80,7 @@ class ULCDF_Extractor(_Extractor, nn.Module):
             random_index = random_index.int().bool()
             index = index[random_index]
             values = values[random_index] / keep_prob
-            g = torch.sparse.Tensor(index.t(), values, size)
+            g = torch.sparse.DoubleTensor(index.t(), values, size)
             return g
         else:
             return graph
