@@ -20,7 +20,7 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
-datahub = DataHub("datasets/Assist17")
+datahub = DataHub("datasets/NeurIPS2020")
 datahub.random_split(source="total", to=["train", "test"], seed=seed)
 print("Number of response logs {}".format(len(datahub)))
 
@@ -29,8 +29,8 @@ print("Number of response logs {}".format(len(datahub)))
 # kancd.train(datahub, "train", "test", valid_metrics=['auc', 'ap', 'doa'], batch_size=256, weight_decay=0)
 
 ulcdf = ULCDF(datahub.student_num, datahub.exercise_num, datahub.knowledge_num)
-ulcdf.build(latent_dim=32, device='cuda:1', predictor_type='dp-linear', gcn_layers=3, dtype=torch.float64)
-ulcdf.train(datahub, "train", "test", valid_metrics=['auc', 'ap', 'doa'], batch_size=1024, lr=6e-3, weight_decay=0, epoch=20)
+ulcdf.build(latent_dim=32, device='cuda:1', predictor_type='dp-linear', gcn_layers=1, dtype=torch.float64)
+ulcdf.train(datahub, "train", "test", valid_metrics=['auc', 'ap', 'doa'], batch_size=512, lr=1e-3, weight_decay=0, epoch=20)
 
 # ncdm = NCDM(datahub.student_num, datahub.exercise_num, datahub.knowledge_num)
 # ncdm.build()

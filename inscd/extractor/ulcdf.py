@@ -6,7 +6,7 @@ from .._base import _Extractor
 
 class ULCDF_Extractor(_Extractor, nn.Module):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int, latent_dim: int, device,
-                 dtype, gcn_layers=3, keep_prob=0.9):
+                 dtype, gcn_layers=3, keep_prob=0.9, activation='ELU'):
         super().__init__()
         self.student_num = student_num
         self.exercise_num = exercise_num
@@ -18,6 +18,7 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.gcn_layers = gcn_layers
         self.keep_prob = keep_prob
         self.gcn_drop = True
+        self.activation = self.choose_activation(activation)
         self.graph_dict = ...
 
         self.__student_emb = nn.Embedding(self.student_num, self.latent_dim, dtype=self.dtype).to(self.device)
@@ -30,7 +31,6 @@ class ULCDF_Extractor(_Extractor, nn.Module):
             "disc": self.__disc_emb.weight,
             "knowledge": self.__knowledge_emb.weight
         }
-        self.PreLU = nn.PReLU()
 
         self.concat_layer = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
         self.concat_layer_1 = nn.Linear(2 * self.latent_dim, self.latent_dim, dtype=self.dtype).to(self.device)
@@ -47,6 +47,17 @@ class ULCDF_Extractor(_Extractor, nn.Module):
     def get_graph_dict(self, graph_dict):
         self.graph_dict = graph_dict
 
+    @staticmethod
+    def choose_activation(activation):
+        if activation == 'LeakyReLU':
+            return nn.LeakyReLU(negative_slope=0.8)
+        elif activation == 'ELU':
+            return nn.ELU()
+        elif activation == 'ReLU':
+            return nn.ReLU()
+        else:
+            raise ValueError(f"Unsupported activation function: {activation}")
+
     def convolution(self, graph):
         stu_emb, exer_emb, know_emb = (self.__student_emb.weight,
                                        self.__exercise_emb.weight,
@@ -62,10 +73,10 @@ class ULCDF_Extractor(_Extractor, nn.Module):
     def __common_forward(self):
         out_hol_emb, right_emb, wrong_emb = self.convolution(self.graph_dict['all']), self.convolution(
             self.graph_dict['right']), self.convolution(self.graph_dict['wrong'])
-        out_dis_emb = F.elu(self.concat_layer(torch.cat([right_emb, wrong_emb], dim=1))
-                                 )
-        out_emb = F.elu(self.concat_layer_1(torch.cat([out_dis_emb, out_hol_emb], dim=1))
-                          )
+        out_dis_emb = self.activation(self.concat_layer(torch.cat([right_emb, wrong_emb], dim=1))
+                                      )
+        out_emb = self.activation(self.concat_layer_1(torch.cat([out_dis_emb, out_hol_emb], dim=1))
+                                  )
 
         student_ts, exercise_ts, knowledge_ts = torch.split(out_emb,
                                                             [self.student_num, self.exercise_num, self.knowledge_num])

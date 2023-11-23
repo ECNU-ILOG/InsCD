@@ -35,7 +35,7 @@ class MIRT(_CognitiveDiagnosisModel):
             dtype=dtype,
             latent_dim=latent_dim
         )
-        if if_type == 'sus':
+        if if_type == 'sub':
             self.inter_func = IRT_IF(
                 device=device,
                 dtype=dtype

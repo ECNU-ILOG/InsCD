@@ -3,11 +3,13 @@ from .dp import DP_IF
 from .kancd import KANCD_IF
 from .irt import IRT_IF
 from .mirt import MIRT_IF
+from .kscd import KSCD_IF
 
 __all__ = [
     "NCD_IF",
     "DP_IF",
     "KANCD_IF",
     "IRT_IF",
-    "MIRT_IF"
+    "MIRT_IF",
+    "KSCD_IF"
 ]

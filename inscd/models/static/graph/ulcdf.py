@@ -30,7 +30,7 @@ class ULCDF(_CognitiveDiagnosisModel):
 
     def build(self, latent_dim=32, device: str = "cpu", gcn_layers: int = 3, if_type='dp-linear',
               leaky=0.8, keep_prob=0.9,
-              dtype=torch.float32, hidden_dims: list = None, **kwargs):
+              dtype=torch.float32, hidden_dims: list = None, activation='ELU', **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
@@ -43,6 +43,7 @@ class ULCDF(_CognitiveDiagnosisModel):
             dtype=dtype,
             gcn_layers=gcn_layers,
             keep_prob=keep_prob,
+            activation=activation
         )
         self.device = device
         if if_type == 'ncd':
@@ -66,7 +67,8 @@ class ULCDF(_CognitiveDiagnosisModel):
     def train(self, datahub: DataHub, set_type="train", valid_set_type="valid",
               valid_metrics=None, epoch=10, lr=5e-4, weight_decay=0.0005, batch_size=256):
         ek_graph = datahub.q_matrix.copy()
-        se_graph_right, se_graph_wrong = [self.__create_adj_se(datahub[set_type], is_subgraph=True)[i] for i in range(2)]
+        se_graph_right, se_graph_wrong = [self.__create_adj_se(datahub[set_type], is_subgraph=True)[i] for i in
+                                          range(2)]
         se_graph = self.__create_adj_se(datahub[set_type], is_subgraph=False)
         sk_graph = self.__create_adj_sk(datahub[set_type], datahub.q_matrix)
         graph_dict = {
@@ -175,4 +177,3 @@ class ULCDF(_CognitiveDiagnosisModel):
         norm_adj_tmp = d_mat_inv.dot(graph)
         adj_matrix = norm_adj_tmp.dot(d_mat_inv)
         return self.__sp_mat_to_sp_tensor(adj_matrix).to(self.device)
-
