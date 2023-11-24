@@ -39,13 +39,13 @@ class ULCDF_Extractor(_Extractor, nn.Module):
         self.transfer_knowledge_layer = nn.Linear(self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
         self.apply(self.initialize_weights)
 
+    def get_graph_dict(self, graph_dict):
+        self.graph_dict = graph_dict
+
     @staticmethod
     def initialize_weights(module):
         if isinstance(module, (nn.Linear, nn.Embedding)):
             nn.init.xavier_normal_(module.weight)
-
-    def get_graph_dict(self, graph_dict):
-        self.graph_dict = graph_dict
 
     @staticmethod
     def choose_activation(activation):

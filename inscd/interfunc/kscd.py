@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from collections import OrderedDict
 from .._base import _InteractionFunction
 
 
@@ -13,10 +12,10 @@ class KSCD_IF(_InteractionFunction, nn.Module):
         self.latent_dim = latent_dim
         self.device = device
         self.dtype = dtype
-        self.disc_mlp = nn.Linear(self.latent_dim, 1).to(self.device)
-        self.f_sk = nn.Linear(self.knowledge_num + self.latent_dim, self.knowledge_num).to(self.device)
-        self.f_ek = nn.Linear(self.knowledge_num + self.latent_dim, self.knowledge_num).to(self.device)
-        self.f_se = nn.Linear(self.knowledge_num, 1).to(self.device)
+        self.disc_mlp = nn.Linear(self.latent_dim, 1, dtype=self.dtype).to(self.device)
+        self.f_sk = nn.Linear(self.knowledge_num + self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.f_ek = nn.Linear(self.knowledge_num + self.latent_dim, self.knowledge_num, dtype=self.dtype).to(self.device)
+        self.f_se = nn.Linear(self.knowledge_num, 1, dtype=self.dtype).to(self.device)
 
         for name, param in self.named_parameters():
             if 'weight' in name:
@@ -41,7 +40,3 @@ class KSCD_IF(_InteractionFunction, nn.Module):
 
     def transform(self, mastery, knowledge):
         return F.sigmoid(mastery @ knowledge.T)
-
-    @staticmethod
-    def monotonicity():
-        return
