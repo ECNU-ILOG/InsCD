@@ -55,6 +55,8 @@ class ULCDF_Extractor(_Extractor, nn.Module):
             return nn.ELU()
         elif activation == 'ReLU':
             return nn.ReLU()
+        elif activation == "GeLU":
+            return nn.GELU()
         else:
             raise ValueError(f"Unsupported activation function: {activation}")
 

@@ -42,6 +42,8 @@ class MIRT(_CognitiveDiagnosisModel):
             )
         elif if_type == 'sum':
             self.inter_func = MIRT_IF(
+                knowledge_num=self.knowledge_num,
+                latent_dim=latent_dim,
                 device=device,
                 dtype=dtype
             )

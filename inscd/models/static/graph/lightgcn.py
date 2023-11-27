@@ -7,10 +7,10 @@ import scipy.sparse as sp
 from ...._base import _CognitiveDiagnosisModel
 from ....datahub import DataHub
 from ....interfunc import NCD_IF, DP_IF, MIRT_IF, MF_IF
-from ....extractor import ULCDF_Extractor
+from ....extractor import LIGHTGCN_Extractor
 
 
-class ULCDF(_CognitiveDiagnosisModel):
+class LIGHTGCN(_CognitiveDiagnosisModel):
     def __init__(self, student_num: int, exercise_num: int, knowledge_num: int):
         """
         Description:
@@ -28,23 +28,23 @@ class ULCDF(_CognitiveDiagnosisModel):
         """
         super().__init__(student_num, exercise_num, knowledge_num)
 
-    def build(self, latent_dim=32, device: str = "cpu", gcn_layers: int = 3, if_type='dp-linear',
-              leaky=0.8, keep_prob=0.9,
-              dtype=torch.float32, hidden_dims: list = None, activation='ELU', **kwargs):
+    def build(self, device: str = "cpu", gcn_layers: int = 3, if_type='dp-linear'
+              , keep_prob=0.9,
+              dtype=torch.float32, hidden_dims: list = None, **kwargs):
         if hidden_dims is None:
             hidden_dims = [512, 256]
 
-        self.extractor = ULCDF_Extractor(
+        self.extractor = LIGHTGCN_Extractor(
             student_num=self.student_num,
             exercise_num=self.exercise_num,
             knowledge_num=self.knowledge_num,
-            latent_dim=latent_dim,
+            latent_dim=self.knowledge_num,
             device=device,
             dtype=dtype,
             gcn_layers=gcn_layers,
             keep_prob=keep_prob,
-            activation=activation
         )
+
         self.device = device
         if if_type == 'ncd':
             self.inter_func = NCD_IF(knowledge_num=self.knowledge_num,
@@ -65,23 +65,14 @@ class ULCDF(_CognitiveDiagnosisModel):
                 latent_dim=16,
                 device=device,
                 dtype=dtype,
-            utlize=True)
+                utlize=True)
         else:
             raise ValueError("Remain to be aligned....")
 
     def train(self, datahub: DataHub, set_type="train", valid_set_type="valid",
               valid_metrics=None, epoch=10, lr=5e-4, weight_decay=0.0005, batch_size=256):
-        ek_graph = datahub.q_matrix.copy()
-        se_graph_right, se_graph_wrong = [self.__create_adj_se(datahub[set_type], is_subgraph=True)[i] for i in
-                                          range(2)]
-        se_graph = self.__create_adj_se(datahub[set_type], is_subgraph=False)
-        sk_graph = self.__create_adj_sk(datahub[set_type], datahub.q_matrix)
-        graph_dict = {
-            'right': self.__final_graph(se_graph_right, sk_graph, ek_graph),
-            'wrong': self.__final_graph(se_graph_wrong, sk_graph, ek_graph),
-            'all': self.__final_graph(se_graph, sk_graph, ek_graph)
-        }
-        self.extractor.get_graph_dict(graph_dict)
+        graph = self.__sp_mat_to_sp_tensor(self.__create_adj_mat(datahub["train"])).to(self.device)
+        self.extractor.get_graph(graph)
         if valid_metrics is None:
             valid_metrics = ["acc", "auc", "f1", "doa", 'ap']
         loss_func = nn.BCELoss()
@@ -138,47 +129,17 @@ class ULCDF(_CognitiveDiagnosisModel):
         indices = torch.from_numpy(np.asarray([coo.row, coo.col]))
         return torch.sparse_coo_tensor(indices, coo.data, coo.shape, dtype=torch.float64).coalesce()
 
-    def __create_adj_sk(self, np_train, q):
-        sk_np = np.zeros(shape=(self.student_num, self.knowledge_num))
-        for k in range(np_train.shape[0]):
-            stu_id = np_train[k, 0]
-            exer_id = np_train[k, 1]
-            skills = np.where(q[int(exer_id)] != 0)[0]
-            sk_np[int(stu_id), skills] = 1
-        return sk_np
-
-    def __create_adj_se(self, np_response, is_subgraph=False):
-        if is_subgraph:
-            train_stu_right = np_response[np_response[:, 2] == 1, 0]
-            train_exer_right = np_response[np_response[:, 2] == 1, 1]
-            train_stu_wrong = np_response[np_response[:, 2] == 0, 0]
-            train_exer_wrong = np_response[np_response[:, 2] == 0, 1]
-            adj_se_right = self.__get_csr(train_stu_right, train_exer_right,
-                                          shape=(self.student_num, self.exercise_num))
-            adj_se_wrong = self.__get_csr(train_stu_wrong, train_exer_wrong,
-                                          shape=(self.student_num, self.exercise_num))
-            return adj_se_right.toarray(), adj_se_wrong.toarray()
-
-        else:
-            response_stu = np_response[:, 0]
-            response_exer = np_response[:, 1]
-            adj_se = self.__get_csr(response_stu, response_exer, shape=(self.student_num, self.exercise_num))
-            return adj_se.toarray()
-
-    def __final_graph(self, se, sk, ek):
-        sek_num = self.student_num + self.exercise_num + self.knowledge_num
-        se_num = self.student_num + self.exercise_num
-        tmp = np.zeros(shape=(sek_num, sek_num))
-        tmp[:self.student_num, self.student_num: se_num] = se
-        tmp[:self.student_num, se_num:sek_num] = sk
-        tmp[self.student_num:se_num, se_num:sek_num] = ek
-
-        graph = tmp + tmp.T
-        graph = sp.csr_matrix(graph)
-        rowsum = np.array(graph.sum(1))
+    def __create_adj_mat(self, np_train):
+        n_nodes = self.student_num + self.exercise_num
+        train_stu = np_train[:, 0]
+        train_exer = np_train[:, 1]
+        ratings = np.ones_like(train_stu, dtype=np.float64)
+        tmp_adj = sp.csr_matrix((ratings, (train_stu, train_exer + self.student_num)), shape=(n_nodes, n_nodes))
+        adj_mat = tmp_adj + tmp_adj.T
+        rowsum = np.array(adj_mat.sum(1))
         d_inv = np.power(rowsum, -0.5).flatten()
         d_inv[np.isinf(d_inv)] = 0.
         d_mat_inv = sp.diags(d_inv)
-        norm_adj_tmp = d_mat_inv.dot(graph)
+        norm_adj_tmp = d_mat_inv.dot(adj_mat)
         adj_matrix = norm_adj_tmp.dot(d_mat_inv)
-        return self.__sp_mat_to_sp_tensor(adj_matrix).to(self.device)
+        return adj_matrix
