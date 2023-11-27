@@ -5,6 +5,7 @@ from .irt import IRT_IF
 from .mirt import MIRT_IF
 from .kscd import KSCD_IF
 from .mf import MF_IF
+from .rcd import RCD_IF
 
 __all__ = [
     "NCD_IF",
@@ -13,5 +14,6 @@ __all__ = [
     "IRT_IF",
     "MIRT_IF",
     "KSCD_IF",
-    "MF_IF"
+    "MF_IF",
+    "RCD_IF"
 ]
