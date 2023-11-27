@@ -18,7 +18,6 @@ class Default(_Extractor, nn.Module):
             self.latent_dim = knowledge_num
         else:
             self.latent_dim = latent_dim
-        torch.set_default_dtype(torch.float64)
 
         self.__student_emb = nn.Embedding(self.student_num, self.latent_dim, dtype=self.dtype).to(self.device)
         self.__knowledge_emb = nn.Embedding(self.knowledge_num, self.latent_dim, dtype=self.dtype).to(self.device)
