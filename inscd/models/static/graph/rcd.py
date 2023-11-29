@@ -39,6 +39,7 @@ class RCD(_CognitiveDiagnosisModel):
             knowledge_num=self.knowledge_num,
             device=device,
             dtype=dtype,
+            if_type=if_type
         )
         self.device = device
         if if_type == 'ncd':
@@ -71,7 +72,7 @@ class RCD(_CognitiveDiagnosisModel):
             raise ValueError("Remain to be aligned....")
 
     def train(self, datahub: DataHub, set_type="train", valid_set_type="valid",
-              valid_metrics=None, epoch=10, lr=5e-4, weight_decay=0.0005, batch_size=256):
+              valid_metrics=None, epoch=10, lr=0.0001, weight_decay=0.0005, batch_size=256):
         local_map = {
             'k_from_e': self.build_graph4ke(datahub, from_e=True),
             'e_from_k': self.build_graph4ke(datahub, from_e=False),

@@ -55,13 +55,13 @@ class DataHub:
                 exec("self.__{} = temp_data".format(name))
             exec("self.__set_type_map[{}] = self.__{}".format(name, name))
 
-    def detach_labels(self, set_type)->list:
+    def detach_labels(self, set_type) -> list:
         if set_type not in self.__set_type_map.keys():
             raise ValueError("Dataset \"{}\" does not exist. If you create your new dataset via \"load_data()\", "
                              "the parameter \"dataset\" is one of the {}".format(set_type, self.__set_type_map.keys()))
         return self.__set_type_map[set_type][:, -1].T.tolist()
 
-    def random_split(self, slice_out=0.8, source="total", to: list=None, seed=6594):
+    def random_split(self, slice_out=0.8, source="total", to: list = None, seed=6594):
         if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
@@ -86,8 +86,20 @@ class DataHub:
         self.__set_type_map[to[0]] = set0
         self.__set_type_map[to[1]] = set1
 
+    def add_noise(self, noise_ratio=0.2, source="train"):
+        if not 0 < noise_ratio < 1:
+            raise ValueError("\"noise ratio\" should be in (0, 1).")
+        tmp_set = self.__set_type_map[source]
+        noise_index = np.random.choice(np.arange(tmp_set.shape[0]),
+                                       size=int(noise_ratio * tmp_set.shape[0]))
+        for index in noise_index:
+            init_score = tmp_set[index, 2]
+            if init_score == 1:
+                tmp_set[index, 2] = 0
+            else:
+                tmp_set[index, 2] = 1
 
-    def group_split(self, slice_out=0.8, source="total", to: list=None, seed=6594):
+    def group_split(self, slice_out=0.8, source="total", to: list = None, seed=6594):
         if not 0 < slice_out < 1:
             raise ValueError("\"train_rate\" should be in (0, 1).")
 
@@ -104,13 +116,12 @@ class DataHub:
             raise ValueError("Dataset \"{}\" does not exist. If you create your new dataset via \"load_data()\", "
                              "the parameter \"dataset\" is one of the {}".format(source, self.__set_type_map.keys()))
 
-
         tmp_set = self.__set_type_map[source]
         student_id = np.unique(tmp_set[:, 0].T)
 
         np.random.seed(seed)
         candidate = np.random.choice(student_id,
-                                     size=int(slice_out * len(student_id)), replace=False,)
+                                     size=int(slice_out * len(student_id)), replace=False, )
 
         self.__set_type_map[to[0]] = tmp_set[np.isin(tmp_set[:, 0], candidate)]
         self.__set_type_map[to[1]] = tmp_set[~np.isin(tmp_set[:, 0], candidate)]
