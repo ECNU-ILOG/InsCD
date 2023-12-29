@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 import numpy as np
 import torch
@@ -86,7 +87,10 @@ class DataHub:
         self.__set_type_map[to[0]] = set0
         self.__set_type_map[to[1]] = set1
 
-    def add_noise(self, noise_ratio=0.2, source="train"):
+    def add_noise(self, noise_ratio=0.2, source="train", to=None):
+        if to is None:
+            warnings.warn("If to is NoneType, the original source dataset {} will be overwritten.", UserWarning)
+
         if not 0 < noise_ratio < 1:
             raise ValueError("\"noise ratio\" should be in (0, 1).")
         tmp_set = self.__set_type_map[source]
@@ -98,6 +102,11 @@ class DataHub:
                 tmp_set[index, 2] = 0
             else:
                 tmp_set[index, 2] = 1
+
+        if to is None:
+            self.__set_type_map[source] = tmp_set
+        else:
+            self.__set_type_map[to] = tmp_set
 
     def group_split(self, slice_out=0.8, source="total", to: list = None, seed=6594):
         if not 0 < slice_out < 1:
