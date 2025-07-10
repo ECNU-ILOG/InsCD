@@ -94,3 +94,12 @@ export all_proxy = 'socks5://<IP address of proxy>:<Port of proxy>'
 ```
 
 > 💡 Note: These settings are only effective for the current terminal session.
+
+## 🗞 Citation
+If this toolkit is helpful and can inspire you in your reseach or applications, please kindly cite as follows.
+
+### BibTex
+```
+
+```
+### ACM Format
