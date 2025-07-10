@@ -6,8 +6,8 @@ from inscd.utils import parse_command_line_args
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='DCD', help='Model name')
-    parser.add_argument('--datahub_name', type=str, default='XES3G5M')
+    parser.add_argument('--model', type=str, default='NCDM', help='Model name')
+    parser.add_argument('--datahub_name', type=str, default='Math1')
     return parser.parse_known_args()
 
 def cli():

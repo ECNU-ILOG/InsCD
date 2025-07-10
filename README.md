@@ -1,13 +1,27 @@
 <div align='center'>
 <h1>InsCD: A Modularized, Comprehensive and User-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis</h1>
-    <a href='https://aiedu.ecnu.edu.cn/'>Shanghai Institute of AI Education</a>, <a href='http://www.cs.ecnu.edu.cn/'>School of Computer Science and Technology</a><br>
-    East China Normal University
 
-<div>InsCD, namely Instant Cognitive Diagnosis (Chinese: 时诊), is a highly modularized python library for cognitive diagnosis in intelligent education systems. This library incorporates both traditional methods (e.g., solving IRT via statistics) and deep learning-based methods (e.g., modelling students and exercises via graph neural networks). 
+<a href='https://aiedu.ecnu.edu.cn/'>Shanghai Institute of AI Education</a>, <a href='http://www.cs.ecnu.edu.cn/'>School of Computer Science and Technology</a>
+
+East China Normal University
+
+<img src='asset/inscd.svg' width=700 />
+</div>
+
+InsCD, namely Instant Cognitive Diagnosis (Chinese: 时诊), is a highly modularized python library for cognitive diagnosis in intelligent education systems. This library incorporates both traditional methods (e.g., solving IRT via statistics) and deep learning-based methods (e.g., modelling students and exercises via graph neural networks). 
+
+<div align='center'>
+
+<a href='https://pypi.org/project/inscd-tookit/1.3.1/'><img src='https://img.shields.io/badge/pypi-1.3.1-orange'></a> 
+<a href='https://sites.google.com/view/inscd-doc/home'><img src='https://img.shields.io/badge/Project-Page-brown'></a>
+<a href=''><img src='https://img.shields.io/badge/Paper-PDF-yellow'></a>
+
+</div>
+
 
 ## 📰 News 
-- [x] [2025.7.10] InsCD toolkit v1.3 is released.
-  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD)
+- [x] [2025.7.10] InsCD toolkit v1.3.1 is released.
+  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD). InsCD toolkit v1.3.0 has been yanked.
 - [x] [2024.8.31] InsCD toolkit v1.2 is released.
 What's New: We implement two new models: symbolic cognitive diagnosis model (SymbolCD) and hypergraph cognitive diagnosis model (HyperCD)
 - [x] [2024.7.14] InsCD toolkit v1.1 is released and available for downloading.
@@ -23,12 +37,12 @@ pip install .
 ```
 or install the library from pypi
 ```
-pip install inscd-tookit
+pip install inscd-tookit==1.3.1
 ```
 
 ### Quick Example
 The following code is a simple example of cognitive diagnosis implemented by inscd. We load build-in datasets, create cognitive diagnosis model, train model and show its performance:  
-```python
+```
 inscd_run --model NCDM --datahub_name Math1
 ```
 If you want to use multi-GPU parallel training, please use the following command-line:

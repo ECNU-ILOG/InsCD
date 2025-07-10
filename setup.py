@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='inscd-tookit',
-    version='1.3.0.post1',
+    version='1.3.1',
     description='InsCD: A Modularized, Comprehensive and User-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis',
     author='Zihan Zhou',
     author_email='',
