@@ -1,0 +1,8 @@
+ratio: 0.8
+lam_seq: 0.9
+lam_res: 0.9
+latent_dim: 64
+len_map: 6
+if_type: DisenGCD_IF
+undirect_path: ''
+direct_path: ''

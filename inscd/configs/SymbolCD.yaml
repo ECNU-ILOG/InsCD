@@ -1,0 +1,6 @@
+population_size: 200
+ngen: 10
+cxpb: 0.5
+mutpb: 0.1
+para_epoch: 100
+epochs: 10

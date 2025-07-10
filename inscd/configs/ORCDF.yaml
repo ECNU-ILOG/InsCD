@@ -1,0 +1,10 @@
+hidden_dims: [512, 256]
+dropout: 0.5
+gcn_layers: 3
+keep_prob: 0.9
+ssl_temp: 0.8
+ssl_weight: 1e-2
+latent_dim: 32
+flip_ratio: 0.1
+if_type: KANCD_IF
+weight_decay: 0

@@ -1,0 +1,2 @@
+hidden_dims: [512, 256]
+dropout: 0.5

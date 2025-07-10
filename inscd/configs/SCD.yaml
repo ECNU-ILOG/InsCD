@@ -1,0 +1,6 @@
+hidden_dims: [512, 256]
+dropout: 0.5
+gcn_layers: 2
+if_type: SCD_IF
+alphas: 0.5
+alphae: 0.5

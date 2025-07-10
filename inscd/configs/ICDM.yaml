@@ -1,0 +1,16 @@
+
+# Hyperparametr for Extractor
+agg_type: mean
+gcn_layers: 3
+d_1: 0.1
+d_2: 0.2
+khop: 3
+is_glif: False
+latent_dim: 32
+
+# GAT
+num_heads: 4
+
+# Hyperparametr for IF
+hidden_dims: [512, 256]
+dropout: 0.5

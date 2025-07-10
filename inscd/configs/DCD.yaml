@@ -1,0 +1,56 @@
+EncoderStudentHidden:
+  - 512
+
+EncoderExerciseHidden:
+  - 512
+
+lambda_main: 1.0
+lambda_q: 1.0
+
+align_margin_loss_kwargs:
+  margin: 0.7
+  topk: 2
+  d1: 1
+  margin_lambda: 0.5
+  norm: 1
+  norm_lambda: 1.0
+  start_epoch: 1
+
+sampling_type: mws
+b_sample_type: gumbel_softmax
+
+b_sample_kwargs:
+  tau: 1.0
+  hard: true
+
+bernoulli_prior_p: 0.1
+bernoulli_prior_auto: false
+
+align_type: mse_margin
+
+alpha_student: 0.0
+alpha_exercise: 0.0
+gamma_student: 1.0
+gamma_exercise: 1.0
+beta_student: 0.0
+beta_exercise: 0.0
+g_beta_student: 1.0
+g_beta_exercise: 1.0
+
+disc_scale: 10
+
+pred_dnn_units:
+  - 256
+  - 128
+
+pred_dropout_rate: 0.5
+pred_activation: sigmoid
+interact_type: ncdm
+
+train_batch_size: 512
+eval_batch_size: 512
+lr: 5e-5
+
+hidden_dims: [512, 256]
+dropout: 0.5
+

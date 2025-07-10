@@ -1,0 +1,4 @@
+hidden_dims: [512, 256]
+dropout: 0.5
+gcn_layers: 3
+if_type: RCD_IF
