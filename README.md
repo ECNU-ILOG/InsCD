@@ -7,11 +7,10 @@ East China Normal University
 
 <img src='asset/inscd.svg' width=700 />
 </div>
-
+<br>
 <div align='center'>
 
 <a href='https://pypi.org/project/inscd-tookit/1.3.1/'><img src='https://img.shields.io/badge/pypi-1.3.1-orange'></a> 
-<a href='https://sites.google.com/view/inscd-doc/home'><img src='https://img.shields.io/badge/Project-Page-brown'></a>
 <a href=''><img src='https://img.shields.io/badge/Paper-PDF-yellow'></a>
 
 </div>
