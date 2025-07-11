@@ -126,6 +126,26 @@ Note that we preprocess these datasets and filter invalid response logs. We will
 
 ------
 
+## 📦 Requirements
+
+```
+gdown>=5.2.0
+pandas>=1.0.0
+numpy>=1.20
+torch>=2.0
+scikit-learn>=1.0
+scipy>=1.5
+dgl>=1.0
+joblib>=1.2
+tqdm>=4.60
+accelerate>=0.20
+pyyaml>=6.0
+wandb>=0.15
+deap>=1.4.0
+networkx>=2.6
+```
+------
+
 ## 🤔 Frequent Asked Questions
 > Why I cannot download the dataset when using build-in datasets class (e.g., `NeurIPS20` in `inscd.datahub`)?
 
