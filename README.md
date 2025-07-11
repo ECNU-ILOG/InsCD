@@ -8,8 +8,6 @@ East China Normal University
 <img src='asset/inscd.svg' width=700 />
 </div>
 
-InsCD, namely Instant Cognitive Diagnosis (Chinese: 时诊), is a highly modularized python library for cognitive diagnosis in intelligent education systems. This library incorporates both traditional methods (e.g., solving IRT via statistics) and deep learning-based methods (e.g., modelling students and exercises via graph neural networks). 
-
 <div align='center'>
 
 <a href='https://pypi.org/project/inscd-tookit/1.3.1/'><img src='https://img.shields.io/badge/pypi-1.3.1-orange'></a> 
@@ -18,6 +16,15 @@ InsCD, namely Instant Cognitive Diagnosis (Chinese: 时诊), is a highly modular
 
 </div>
 
+------
+
+## 🧠 Introduction
+
+**InsCD** (Chinese name：时诊) is a highly modularized Python library for cognitive diagnosis in intelligent education systems.  
+It integrates both classical psychometric models (e.g., IRT) and modern deep learning-based approaches (e.g., GNN-based cognitive diagnosis).  
+InsCD is designed for extensibility and ease-of-use, enabling researchers and practitioners to quickly evaluate, build, and extend diagnosis models.
+
+------
 
 ## 📰 News 
 - [x] [2025.7.10] InsCD toolkit v1.3.1 is released.
@@ -26,6 +33,8 @@ InsCD, namely Instant Cognitive Diagnosis (Chinese: 时诊), is a highly modular
 What's New: We implement two new models: symbolic cognitive diagnosis model (SymbolCD) and hypergraph cognitive diagnosis model (HyperCD)
 - [x] [2024.7.14] InsCD toolkit v1.1 is released and available for downloading.
 - [x] [2024.4.20] InsCD toolkit v1.0 is released.
+
+------
 
 ## 🚀 Getting Started
 ### Installation
@@ -41,14 +50,47 @@ pip install inscd-tookit==1.3.1
 ```
 
 ### Quick Example
-The following code is a simple example of cognitive diagnosis implemented by inscd. We load build-in datasets, create cognitive diagnosis model, train model and show its performance:  
+Run the following examples via CLI to quickly train various models. Replace `Math1` with any supported dataset name. 
+#### ➤ Classical Models
+
+```bash
+inscd_run --model IRT --datahub_name Math1
+inscd_run --model MIRT --datahub_name Math1
 ```
+
+#### ➤ Neural Network-based Models
+
+```bash
 inscd_run --model NCDM --datahub_name Math1
+inscd_run --model KaNCD --datahub_name Math1
+inscd_run --model KSCD --datahub_name Math1
 ```
-If you want to use multi-GPU parallel training, please use the following command-line:
+
+#### ➤ Graph-based Models
+
+```bash
+inscd_run --model RCD --datahub_name Math1
+inscd_run --model SCD --datahub_name Math1
+inscd_run --model DisenGCD --datahub_name Math1
+inscd_run --model ORCDF --datahub_name Math1
+inscd_run --model HyperCD --datahub_name Math1
 ```
+
+#### ➤ Augmented & Symbolic Models
+
+```bash
+inscd_run --model ICDM --datahub_name Math1
+inscd_run --model SymbolCD --datahub_name Math1
+```
+
+For **multi-GPU training**:
+
+```bash
 accelerate launch -m inscd_run --model NCDM --datahub_name Math1
 ```
+
+------
+
 ## 🛠 Implementation
 We incoporate classical, famous and state-of-the-art methods published or accepted by leading journals and conferences in the field of psychometric, machine learning and data mining. The reason why we call this toolkit "modulaized" is that we not only provide the "model", but also divide the model into two parts (i.e., extractor and interaction function), which enables us to design new models (e.g., extractor of Hypergraph with interaction function of KaNCD). To evaluate the model, we also provide vairous open-source datasets in online or offline scenarios.
 
@@ -83,6 +125,8 @@ We incoporate classical, famous and state-of-the-art methods published or accept
 
 Note that we preprocess these datasets and filter invalid response logs. We will continuously update preprocessed datasets to foster the community.
 
+------
+
 ## 🤔 Frequent Asked Questions
 > Why I cannot download the dataset when using build-in datasets class (e.g., `NeurIPS20` in `inscd.datahub`)?
 
@@ -95,7 +139,17 @@ export all_proxy = 'socks5://<IP address of proxy>:<Port of proxy>'
 
 > 💡 Note: These settings are only effective for the current terminal session.
 
-## 🗞 Citation
+------
+
+## 🤗 Contributor
+
+Contributors are arranged in alphabetical order by first name. We welcome more people to participate in maintenance and improve the community of intelligent education.
+
+()
+
+------
+
+## 🧾 Citation
 If this toolkit is helpful and can inspire you in your reseach or applications, please kindly cite as follows.
 
 ### BibTex
