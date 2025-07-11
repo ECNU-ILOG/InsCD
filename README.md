@@ -1,5 +1,5 @@
 <div align='center'>
-<h1>InsCD: A Modularized, Comprehensive and User-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis</h1>
+<h1>InsCD: A Modular<strong>i</strong>zed, Comprehe<strong>n</strong>sive and U<strong>s</strong>er-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis</h1>
 
 <a href='https://aiedu.ecnu.edu.cn/'>Shanghai Institute of AI Education</a>, <a href='http://www.cs.ecnu.edu.cn/'>School of Computer Science and Technology</a>
 
@@ -20,7 +20,7 @@ East China Normal University
 
 ## 🧠 Introduction
 
-**InsCD** (Chinese name：时诊) is a highly modularized Python library for cognitive diagnosis in intelligent education systems.  
+**InsCD** (Instant Cognitive Diagnosis, Chinese name：时诊) is a highly modularized Python library for cognitive diagnosis in intelligent education systems.  
 It integrates both classical psychometric models (e.g., IRT) and modern deep learning-based approaches (e.g., GNN-based cognitive diagnosis).  
 InsCD is designed for extensibility and ease-of-use, enabling researchers and practitioners to quickly evaluate, build, and extend diagnosis models.
 
