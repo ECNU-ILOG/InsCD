@@ -23,5 +23,6 @@ __all__ = [
     "classical",
     "graph",
     "misc",
-    "neural"
+    "neural",
+    "response",
 ]

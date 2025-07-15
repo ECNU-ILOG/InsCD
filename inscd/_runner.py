@@ -22,7 +22,7 @@ class Runner:
 
         # Automatically set devices and ddp
         self.config['device'], self.config['use_ddp'] = init_device()
-        if self.config['lisener']=="tensorboard":
+        if self.config['listener']=="tensorboard":
             self.accelerator = Accelerator(log_with='tensorboard',project_dir=self.config['log_dir'])
         else:
             self.accelerator = Accelerator(log_with='wandb')

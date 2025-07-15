@@ -140,7 +140,7 @@ class Unifier():
                     except Exception:
                         pass
             return filtered
-        if self.config['lisener']=="tensorboard":
+        if self.config['listener']=="tensorboard":
             simple_config = filter_simple_types(self.config)
         else:
             simple_config=self.config

@@ -5,8 +5,8 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
-    name='inscd-toolkit',
-    version='1.3.2',
+    name='inscdkit',
+    version='1.3.0',
     description='InsCD: A Modularized, Comprehensive and User-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis',
     long_description=long_description,
     long_description_content_type='text/markdown',

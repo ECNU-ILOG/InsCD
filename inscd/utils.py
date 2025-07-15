@@ -103,6 +103,7 @@ def get_config(
 
     config_file_list.append(os.path.join(current_path, f'configs/{model_name}.yaml'))
     final_config['model'] = model_name
+    final_config['datahub_name'] = config_dict['datahub_name']
 
     if config_file:
         if isinstance(config_file, str):
@@ -114,9 +115,6 @@ def get_config(
             cur_config = yaml.safe_load(f)
             if cur_config:
                 final_config.update(cur_config)
-
-    if config_dict:
-        final_config.update(config_dict)
 
     final_config['run_local_time'] = get_local_time()
     # if final_config['datahub_name']=="Matmat":
@@ -140,9 +138,8 @@ def get_config(
         final_config['train_batch_size']=2048
         final_config['eval_batch_size']=2048
 
-
-
-
+    if config_dict:
+        final_config.update(config_dict)
     return convert_config_dict(final_config)
 
 def convert_config_dict(config: dict) -> dict:
