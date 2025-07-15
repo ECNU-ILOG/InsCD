@@ -9,7 +9,7 @@ East China Normal University
 </div>
 <br>
 <div align='center'>
-<a href='https://pypi.org/project/inscd-tookit/1.3.2/'><img src='https://img.shields.io/badge/pypi-1.3.2-orange'></a> 
+<a href='https://pypi.org/project/inscd-toolkit/1.3.0/'><img src='https://img.shields.io/badge/pypi-1.3.0-orange'></a> 
 <a href=''><img src='https://img.shields.io/badge/Paper-PDF-yellow'></a>
 
 </div>
@@ -25,8 +25,8 @@ InsCD is designed for extensibility and ease-of-use, enabling researchers and pr
 ------
 
 ## 📰 News 
-- [x] [2025.7.10] InsCD toolkit v1.3.2 is released.
-  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD). InsCD toolkit v1.3.1 has been yanked.
+- [x] [2025.7.10] InsCD toolkit v1.3.0 is released.
+  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD).
 - [x] [2024.8.31] InsCD toolkit v1.2 is released.
 What's New: We implement two new models: symbolic cognitive diagnosis model (SymbolCD) and hypergraph cognitive diagnosis model (HyperCD)
 - [x] [2024.7.14] InsCD toolkit v1.1 is released and available for downloading.
@@ -44,10 +44,10 @@ pip install .
 ```
 or install the library from pypi
 ```
-pip install inscd-tookit==1.3.2
+pip install inscd-tookit==1.3.0
 ```
 
-####⚠️ Note: Installing DGL
+#### ⚠️ Note: Installing DGL
 
 InsCD depends on **DGL (Deep Graph Library)**. The installation of DGL varies depending on your operating system, PyTorch version, and whether you are using a GPU.
 
@@ -137,20 +137,19 @@ Note that we preprocess these datasets and filter invalid response logs. We will
 ## 📦 Requirements
 
 ```
-gdown>=5.2.0
-pandas>=1.0.0
-numpy>=1.20
-torch>=2.0
-scikit-learn>=1.0
-scipy>=1.5
-dgl>=1.0
-joblib>=1.2
-tqdm>=4.60
-accelerate>=0.20
-pyyaml>=6.0
-wandb>=0.15
-deap>=1.4.0
-networkx>=2.6
+gdown==5.2.0
+pandas==2.2.3
+numpy==1.26.4
+torch==2.4.0
+scikit-learn==1.5.2
+scipy==1.13.1
+joblib==1.4.2
+tqdm==4.66.5
+accelerate==1.1.1
+pyyaml==6.0.2
+wandb==0.18.5
+deap==1.4.1
+networkx==3.2.1
 ```
 ------
 
