@@ -128,7 +128,24 @@ class Unifier():
             self.model, optimizer, train_dataloader, val_dataloader
         )
         self.config.pop('accelerator')
-        self.accelerator.init_trackers(project_name="inscd", config=self.config)
+        def filter_simple_types(d):
+            simple_types = (int, float, str, bool, torch.Tensor)
+            filtered = {}
+            for k, v in d.items():
+                if isinstance(v, simple_types):
+                    filtered[k] = v
+                else:
+                    try:
+                        filtered[k] = str(v)
+                    except Exception:
+                        pass
+            return filtered
+        if self.config['lisener']=="tensorboard":
+            simple_config = filter_simple_types(self.config)
+        else:
+            simple_config=self.config
+
+        self.accelerator.init_trackers(project_name="inscd", config=simple_config)
 
         epoch_losses = []
 

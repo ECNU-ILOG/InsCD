@@ -22,7 +22,10 @@ class Runner:
 
         # Automatically set devices and ddp
         self.config['device'], self.config['use_ddp'] = init_device()
-        self.accelerator = Accelerator(log_with='wandb')
+        if self.config['lisener']=="tensorboard":
+            self.accelerator = Accelerator(log_with='tensorboard',project_dir=self.config['log_dir'])
+        else:
+            self.accelerator = Accelerator(log_with='wandb')
 
         init_seed(self.config['rand_seed'], self.config['reproducibility'])
         

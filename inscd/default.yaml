@@ -24,3 +24,4 @@ val_metric: "auc"
 metrics: ["acc", "auc"]
 test_size: 0.2
 val_size: 0.1
+lisener: wandb

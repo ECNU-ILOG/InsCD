@@ -9,7 +9,7 @@ East China Normal University
 </div>
 <br>
 <div align='center'>
-<a href='https://pypi.org/project/inscd-toolkit/1.3.0/'><img src='https://img.shields.io/badge/pypi-1.3.0-orange'></a> 
+<a href='https://pypi.org/project/inscd-toolkit/1.3.1/'><img src='https://img.shields.io/badge/pypi-1.3.1-orange'></a> 
 <a href=''><img src='https://img.shields.io/badge/Paper-PDF-yellow'></a>
 
 </div>
@@ -25,7 +25,7 @@ InsCD is designed for extensibility and ease-of-use, enabling researchers and pr
 ------
 
 ## 📰 News 
-- [x] [2025.7.10] InsCD toolkit v1.3.0 is released.
+- [x] [2025.7.10] InsCD toolkit v1.3.1 is released.
   What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD).
 - [x] [2024.8.31] InsCD toolkit v1.2 is released.
 What's New: We implement two new models: symbolic cognitive diagnosis model (SymbolCD) and hypergraph cognitive diagnosis model (HyperCD)
@@ -44,7 +44,7 @@ pip install .
 ```
 or install the library from pypi
 ```
-pip install inscd-tookit==1.3.0
+pip install inscd-toolkit==1.3.1
 ```
 
 #### ⚠️ Note: Installing DGL
@@ -150,11 +150,12 @@ pyyaml==6.0.2
 wandb==0.18.5
 deap==1.4.1
 networkx==3.2.1
+tensorboard==2.18.0
 ```
 ------
 
 ## 🤔 Frequent Asked Questions
-> Why I cannot download the dataset when using build-in datasets class (e.g., `NeurIPS20` in `inscd.datahub`)?
+> **Problem**: Why can't I download datasets when using built-in dataset classes (e.g., `NeurIPS20` in `inscd.datahub`)?
 
 Since these datasets are saved in the  Google Driver, they may be not available in some countries and regions. You can use proxy and add the following commands in your terminal:
 ```bash
@@ -163,7 +164,14 @@ export https_proxy = 'http://<IP address of proxy>:<Port of proxy>'
 export all_proxy = 'socks5://<IP address of proxy>:<Port of proxy>'
 ```
 
-> 💡 Note: These settings are only effective for the current terminal session.
+> **Problem**: WandB fails to connect or hangs due to network issues?
+
+You can disable WandB's network usage by setting the following environment variable:
+```bash
+export WANDB_MODE=offline
+```
+
+💡 Note: These settings are only effective for the current terminal session.
 
 ------
 

@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name='inscd-toolkit',
-    version='1.3.0',
+    version='1.3.1',
     description='InsCD: A Modularized, Comprehensive and User-Friendly Toolkit for Machine Learning Empowered Cognitive Diagnosis',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -30,6 +30,7 @@ setup(
         'wandb==0.18.5',
         'deap==1.4.1',
         'networkx==3.2.1',
+        'tensorboard==2.18.0',
     ],
     include_package_data=True,
     entry_points={

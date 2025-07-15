@@ -12,7 +12,7 @@ def parse_args():
 
 def cli():
     warnings.filterwarnings("ignore")
-    os.environ["WANDB_MODE"] = 'offline'
+    # os.environ["WANDB_MODE"] = 'offline'
 
     args, unparsed_args = parse_args()
     command_line_configs = parse_command_line_args(unparsed_args)
