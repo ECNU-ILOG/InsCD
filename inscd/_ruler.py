@@ -132,6 +132,9 @@ class Ruler:
         else:
             mastery_level = model.diagnose().detach().cpu().numpy()
         # true_r = datahub.detach_labels(set_type)
+        # print("true_r type:", type(true_r))
+        # print("pred_r type:", type(pred_r))
+
         results = {}
         for metric in metrics:
             if metric in ["acc", "auc", "f1", "rmse", 'ap']:

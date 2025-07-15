@@ -9,7 +9,7 @@ East China Normal University
 </div>
 <br>
 <div align='center'>
-<a href='https://pypi.org/project/inscdkit/1.3.0/'><img src='https://img.shields.io/badge/pypi-1.3.0-orange'></a> 
+<a href='https://pypi.org/project/inscdkit/1.3.1/'><img src='https://img.shields.io/badge/pypi-1.3.1-orange'></a> 
 <a href=''><img src='https://img.shields.io/badge/Paper-PDF-yellow'></a>
 
 </div>
@@ -25,8 +25,8 @@ InsCD is designed for extensibility and ease-of-use, enabling researchers and pr
 ------
 
 ## 📰 News 
-- [x] [2025.7.10] InsCD toolkit v1.3.0 is released.
-  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD).
+- [x] [2025.7.10] InsCD toolkit v1.3.1 is released.
+  What's New: We implement one new model: Disentangled Graph Cognitive Diagnosis (DisenGCD). InsCD toolkit v1.3.0 has been yanked from PyPI.
 - [x] [2024.8.31] InsCD toolkit v1.2 is released.
 What's New: We implement two new models: symbolic cognitive diagnosis model (SymbolCD) and hypergraph cognitive diagnosis model (HyperCD)
 - [x] [2024.7.14] InsCD toolkit v1.1 is released and available for downloading.
@@ -44,7 +44,7 @@ pip install .
 ```
 or install the library from pypi
 ```
-pip install inscdkit==1.3.0
+pip install inscdkit==1.3.1
 ```
 
 #### ⚠️ Note: Installing DGL

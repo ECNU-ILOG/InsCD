@@ -224,10 +224,11 @@ class Unifier():
 
                 if self.config['use_ddp']:
                     # all_preds, all_labels = self.accelerator.gather_for_metrics((preds, batch[3])) Leaving Issues
-                    results = self.ruler(self.model, self.datahub, set_type, preds.cpu(), batch[3].cpu(), self.config['metrics'], ddp=True)
+                    results = self.ruler(self.model, self.datahub, set_type, preds.cpu().numpy(), batch[3].cpu().numpy(), self.config['metrics'], ddp=True)
                 else:
-                    preds = preds.cpu()
-                    results = self.ruler(self.model, self.datahub, set_type, preds, batch[3].detach().cpu(), self.config['metrics']) 
+                    # preds = preds.cpu().numpy()
+                    
+                    results = self.ruler(self.model, self.datahub, set_type, preds.cpu().numpy(), batch[3].detach().cpu().numpy(), self.config['metrics']) 
 
 
                 for key, value in results.items():
