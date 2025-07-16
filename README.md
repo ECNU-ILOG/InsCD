@@ -114,7 +114,8 @@ We incoporate classical, famous and state-of-the-art methods published or accept
 |Knowledge-sensed Cognitive Diagnosis Model (KSCD)|2022|Haiping Ma et al. Knowledge-Sensed Cognitive Diagnosis for Intelligent Education Platforms. _CIKM'22_.|
 |Cognitive Diagnosis Model Focusing on Knowledge Concepts (CDMFKC)|2022|Sheng Li et al. Cognitive Diagnosis Focusing on Knowledge Concepts. _CIKM'22_.|
 |Self-supervised Cognitive Diagnosis Model (SCD)|2023|Shanshan Wang et al. Self-Supervised Graph Learning for Long-Tailed Cognitive Diagnosis. _AAAI'23_.|
-|Disentangled Graph Cognitive Diagnosis (DisenGCD)|2024|Shanshan Wang et al. DisenGCD: A Meta Multigraph-assisted Disentangled Graph Learning Framework for Cognitive Diagnosis. _NeurIPS'24_.|
+|Disentangling Cognitive Diagnosis (DCD)|2023|Xiangzhi Chen et al. Disentangling Cognitive Diagnosis with Limited Exercise Label._NeurIPS'23_.|
+|Disentangled Graph Cognitive Diagnosis (DisenGCD)|2024|Shangshang Wang et al. DisenGCD: A Meta Multigraph-assisted Disentangled Graph Learning Framework for Cognitive Diagnosis. _NeurIPS'24_.|
 |Inductive Cognitive Diagnosis  Model (ICDM)|2024|Shuo Liu et al. Inductive Cognitive Diagnosis for Fast Student Learning in Web-Based Intelligent Education Systems. _WWW'24_.|
 |Symbolic Cognitive Diganosis Model (SymbolCD)|2024|Junhao Shen et al. Symbolic Cognitive Diagnosis via Hybrid Optimization for Intelligent Education Systems. _AAAl'24_.|
 |Oversmoothing-Resistant Cognitive Diagnosis Framework (ORCDF)|2024|Shuo Liu et al. ORCDF: An Oversmoothing-Resistant Cognitive Diagnosis Framework for Student Learning in Online Education Systems. _KDD'24_.|
