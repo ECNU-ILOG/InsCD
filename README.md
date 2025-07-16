@@ -58,7 +58,7 @@ Please refer to the official DGL installation guide and choose the command that 
 ### Quick Example
 
 Run the following examples via CLI to quickly train various models. Replace `Math1` with any supported dataset name. 
-#### ➤ Classical statistical Models
+#### ➤ Classical Statistical Models
 
 ```bash
 inscd_run --model IRT --datahub_name Math1
