@@ -58,7 +58,7 @@ Please refer to the official DGL installation guide and choose the command that 
 ### Quick Example
 
 Run the following examples via CLI to quickly train various models. Replace `Math1` with any supported dataset name. 
-#### ➤ Classical Models
+#### ➤ Classical statistical Models
 
 ```bash
 inscd_run --model IRT --datahub_name Math1
@@ -71,6 +71,7 @@ inscd_run --model MIRT --datahub_name Math1
 inscd_run --model NCDM --datahub_name Math1
 inscd_run --model KaNCD --datahub_name Math1
 inscd_run --model KSCD --datahub_name Math1
+inscd_run --model CDMFKC --datahub_name Math1
 ```
 
 #### ➤ Graph-based Models
@@ -81,13 +82,19 @@ inscd_run --model SCD --datahub_name Math1
 inscd_run --model DisenGCD --datahub_name Math1
 inscd_run --model ORCDF --datahub_name Math1
 inscd_run --model HyperCD --datahub_name Math1
+inscd_run --model ICDM --datahub_name Math1
 ```
 
-#### ➤ Augmented & Symbolic Models
+#### ➤ Symbolic Models
 
 ```bash
-inscd_run --model ICDM --datahub_name Math1
 inscd_run --model SymbolCD --datahub_name Math1
+```
+
+#### ➤ Response-based Models
+
+```bash
+inscd_run --model DCD --datahub_name Math1
 ```
 
 For **multi-GPU training**:
